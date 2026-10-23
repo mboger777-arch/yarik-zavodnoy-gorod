@@ -205,7 +205,7 @@ function ringFX(x,y,col,r){LV.rfx.push({x,y,col,t:0,r:r||1.5})}
 function floatT(s,col,x,y){LV.floats.push({s,col,x,y,t:0})}
 // ---------- камера ----------
 function camStep(dt){const L=LV,p=ST.P.getPosition(),v=ST.P.getLinearVelocity();const K=H/VH,VW=W/K;
- let tx=p.x+ST.face*1.6+v.x*.15,ty=p.y+1.25;
+ let tx=p.x+ST.face*1.6+v.x*.15,ty=p.y+.6;
  if(ST.carry){const t=throwTarget(ST.carry);if(t)tx=(p.x+t.x)/2}
  const nr=ST.hook?ST.ring:nearestRing();if(nr)ty=Math.max(ty,Math.min(nr.y-1.6,p.y+3.2));
  if(L.camFn){const o=L.camFn(tx,ty);tx=o[0];ty=o[1]}

@@ -18,7 +18,7 @@ function BOSS(){const L=newLevel({idx:5,bg:'boss',music:'boss',spawn:{x:3,y:1.2}
   else{B.st='down';L.won=true;ST.cheer=9;music('win');SFX.fanfare();clearTiles();const v=vis();for(let i=0;i<5;i++)setTimeout(()=>{if(LV===L)burst(v.x0+v.w*(.15+i*.17),v.y0+60,40,'conf')},i*200);
    run(async()=>{await wait(2600);go('fin')})}}
  L.targets=c=>B.slot?[{x:B.slot.x,y:B.slot.y,any:true,pri:1}]:[];
- L.camFn=(tx,ty)=>{const K=H/VH,VW=W/K;const x=VW>=20?10:clamp(tx,VW/2,20-VW/2);return[x,clamp(ty,2.15,2.6)]};
+ L.camFn=(tx,ty)=>{const K=H/VH,VW=W/K;const x=VW>=20?10:clamp(tx,VW/2,20-VW/2);return[x,clamp(ty,1.55,2.1)]};
  run(async()=>{await wait(500);await say('b_s');await say('b_tip');newSlot();spill();sayNow('b_p1');B.st='rest';B.t=0});
  L.update=dt=>{const P=ST.P,p=P.getPosition(),v=P.getLinearVelocity();B.t+=dt;B.laughT-=dt;B.key+=dt*B.keyV;B.keyV=Math.max(1+B.ph,B.keyV-dt*6);
   if(ST.carry&&!SV.tut.carry){L.hint='carry'}if(L.hint==='carry'&&ST.throwT>0)hintDone('carry');

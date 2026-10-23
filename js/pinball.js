@@ -32,7 +32,7 @@ const PIN_SC={
    const [cx,cy]=this.d(b.x,b.y);if(!P.done&&b.v===[2,4,6,8,10][P.next]){P.lit[u.i]=1;P.next++;SFX.star();burst(cx,cy,26,'spark',50);if(P.next>=5)this.win()}else burst(cx,cy,10,'spark',200)}
   if(u.k==='sling'){P.ball.setLinearVelocity(V(u.d*8,9));SFX.boing()}},
  win(){const P=this.P;P.done=true;SV.pin=1;save();SFX.fanfare();vib([30,50,30]);const v=vis();for(let i=0;i<5;i++)setTimeout(()=>{if(G.scene==='pin')burst(v.x0+v.w*(.15+i*.17),v.y0+60,40,'conf')},i*180);sayNow('pb_ok')},
- geo(){const v=vis();const k=Math.min(70,(v.w-60)/16.6,(safeB()-safeT()-96)/9.2);const yb=safeB()-12;return{k,yb}},
+ geo(){const v=vis();const k=Math.min(70,(v.w-60)/16.6,(safeB()-safeT()-90)/9.7);const yb=safeB()-8-k*.55;return{k,yb}},
  d(x,y){const g=this.geo();return[640+(x-8)*g.k,g.yb-y*g.k]},
  draw(){const P=this.P;bgCover('map');dim(.35);const {k}=this.geo();const d=(x,y)=>this.d(x,y);
   const wall=[[5.75,1.05],[0,3.2],[0,8.2],[1,9],[15,9],[16,8.2],[16,3.2],[10.25,1.05]];

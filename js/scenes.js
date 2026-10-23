@@ -49,7 +49,7 @@ SC.map={enter(){music('title');run(async()=>{await wait(350);if(NGEARS()>=5&&!SV
    mapNode('n'+i,x,ny,d,i===5?'★':String(i+1),open,()=>{if(!open){sayNow('m_lock');SFX.bad();return}SFX.click();go('play',i)},open&&!done);
    if(done)spr('medal',x+d*.45,ny-d*.38,d*.55,{rot:Math.sin(T*2+i)*.1});
    if(i<5&&SV.gears[i])spr('gear',x-d*.48,ny-d*.36,d*.38,{rot:T});
-   plate(n[2],x,ny+d/2+28,i===5?236:212,46,30,{id:'mapname'})});
+   {const pw=i===5?236:212;plate(n[2],clamp(x,safeL()+pw/2+6,safeR()-pw/2-6),ny+d/2+28,pw,46,30,{id:'mapname'})}});
   {const [x,y]=bgXY(MAPN[cur][0],MAPN[cur][1]);const hh=150;const side=cur===5?-1:1;hero('y_idle',x+side*92,y+30,hh,{seed:2});spr('p_sit',x+side*150,y+30,hh*.42,{ax:.5,ay:1,blink:7})}
   const x0=safeR()-222,y0=safeT()+40;X.fillStyle='rgba(43,25,58,.85)';rr(x0-32,y0-32,252,64,32);X.fill();X.strokeStyle='#e0b25a';X.lineWidth=3;X.stroke();
   for(let i=0;i<5;i++)spr('gear',x0+i*47,y0,SV.gears[i]?46:34,{a:SV.gears[i]?1:.35,rot:SV.gears[i]?T*.8:0});
@@ -71,7 +71,7 @@ SC.play={world:1,enter(i){FX.shake=0;FX.hit=0;FX.slow=1;FX.flash=0;if(i===5)BOSS
   if(FX.hit>0){FX.hit-=dt}else{G.acc+=dt*FX.slow;let n=0;while(G.acc>=1/60&&n<4){stepWorld(1/60);G.acc-=1/60;n++;if(!LV)return}if(n>=4)G.acc=0}
   FX.slow=Math.min(1,FX.slow+dt*1.6);FX.shake=Math.max(0,FX.shake-dt*2.2);camStep(dt)},
  draw(){drawWorld()},hud(){drawHUD()}};
-function camSnapNow(){const p=ST.P.getPosition();LV.cam.x=p.x+1.6;LV.cam.y=p.y+1.25;for(let i=0;i<90;i++)camStep(1/30)}
+function camSnapNow(){const p=ST.P.getPosition();LV.cam.x=p.x+1.6;LV.cam.y=p.y+.6;for(let i=0;i<90;i++)camStep(1/30)}
 function winLevel(){const L=LV;if(!L||L.won)return;L.won=true;SV.done[L.idx]=1;save();ST.ctrl=false;ST.cheer=9;music('win');SFX.fanfare();vib([30,50,30,50,60]);
  const v=vis();for(let i=0;i<5;i++)setTimeout(()=>{if(LV===L)burst(v.x0+v.w*(.15+i*.17),v.y0+60,40,'conf')},i*180);
  run(async()=>{await wait(300);await say('g_win');await wait(900);go('map')})}
