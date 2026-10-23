@@ -84,14 +84,15 @@ function ctxNow(){return{gen:GEN}}
 function alive(c){return c.gen===GEN}
 function wait(ms){const c=ctxNow();return new Promise((r,j)=>setTimeout(()=>alive(c)?r():j(STALE),G.fast?Math.min(ms,30):ms))}
 let SAYID=0,SAYQ=Promise.resolve(),SAYEP=0,VOL_DUCK=0;
-function stopTalk(){SAYEP++;if(skipTalk)skipTalk();talk=null}
+// реплики никогда не обрываются: stopTalk лишь отменяет очередь, текущая фраза договаривается
+function stopTalk(){SAYEP++}
 function say(k){const ep=SAYEP,c=ctxNow();const p=SAYQ.then(()=>ep===SAYEP&&alive(c)?say1(k):null);SAYQ=p.catch(()=>{});return p.then(v=>{if(!alive(c))throw STALE;return v})}
 function sayNow(k){stopTalk();return say(k).catch(()=>{})}
 function sayQ(k){say(k).catch(()=>{})}
 async function say1(k){const l=LINES[k];if(!l)return;const id=++SAYID;talk={who:l.who,text:l.t,k,t0:T,id};
  if(G.fast){await new Promise(r=>setTimeout(r,40));if(talk&&talk.id===id)talk=null;return}
  const v=typeof VOICE!=='undefined'&&VOICE[k];const dur=Math.max(1800,l.t.length*65);
- await new Promise(async res=>{let done=false,a=null;const fin=()=>{if(!done){done=true;if(a){try{a.pause()}catch(e){}}if(skipTalk===sk)skipTalk=null;res()}};const sk=()=>fin();skipTalk=sk;setTimeout(fin,((v&&v[1])||0)*1000+dur+4000);
+ await new Promise(async res=>{let done=false,a=null;const fin=()=>{if(!done){done=true;if(a){try{a.pause()}catch(e){}}if(skipTalk===sk)skipTalk=null;res()}};const sk=()=>fin();skipTalk=sk;setTimeout(fin,((v&&v[1])||0)*1000+dur+9000);
   if(v&&!G.mute){a=new Audio('assets/voice/'+v[0]);a.onended=()=>setTimeout(fin,250);a.onerror=()=>setTimeout(fin,dur);let ok=true;try{await a.play()}catch(e){ok=false}
    if(done)return;if(ok)setTimeout(fin,(v[1]+2.5)*1000);else setTimeout(fin,dur)}else setTimeout(fin,dur)});
  if(talk&&talk.id===id)talk=null}

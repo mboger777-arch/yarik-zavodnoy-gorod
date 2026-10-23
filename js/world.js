@@ -101,7 +101,12 @@ function actionKind(){if(ST.carry)return'throw';if(ST.hook)return'hook';if(neare
 function grab(c){ST.carry=c;c.held=true;c.b.setGravityScale(0);c.b.setAngularVelocity(0);SFX.grab();vib(10);const q=c.b.getPosition();ringFX(q.x,q.y,'#7ef',.9);LV.onGrab&&LV.onGrab(c)}
 function dropCarry(){const c=ST.carry;if(!c)return;ST.carry=null;c.held=false;c.b.setGravityScale(1);c.noPlayer=.5}
 function throwTarget(c){if(!LV.targets)return null;const p=c.b.getPosition();let best=null,bd=1e9;for(const t of LV.targets(c)){const dx=t.x-p.x,dy=t.y-p.y;if(!t.any&&Math.sign(dx)!==ST.face&&Math.abs(dx)>1.2)continue;if(Math.abs(dx)>TU.throwMaxD||dy>9||dy<-6)continue;const d=Math.abs(dx)+Math.abs(dy)*.5-(t.pri||0)*3;if(d<bd){bd=d;best=t}}return best}
-function throwVel(p,t){const dx=t.x-p.x,dy=t.y-p.y;const tt=clamp(Math.hypot(dx,dy)/11,.42,.95);return[dx/tt,(dy-.5*TU.g*tt*tt)/tt]}
+function throwVel(p,t){const dx=t.x-p.x,dy=t.y-p.y;const g=-TU.g;// навесом: подбираем вершину дуги, чтобы ящик перелетел ступеньки и стенки
+ const xa=Math.min(p.x,t.x),xb=Math.max(p.x,t.x),obs=[];for(const q of (LV&&LV.solids)||[]){if(q.x2<xa-.2||q.x1>xb+.2||Math.abs((q.x1+q.x2)/2-t.x)<.6||q.y2>p.y+5)continue;obs.push(q)}
+ const sol=top=>{const vy=Math.sqrt(2*g*top);const tt=vy/g+Math.sqrt(2*Math.max(.02,top-dy)/g);return[dx/tt,vy,tt]};
+ let top=Math.max(0,dy)+clamp(Math.abs(dx)*.2,.9,2.4),r=sol(top);
+ for(let k=0;k<14&&obs.length;k++){r=sol(top);let hit=false;for(let i=1;i<24&&!hit;i++){const tm=r[2]*i/24,x=p.x+r[0]*tm,y=p.y+r[1]*tm-.5*g*tm*tm;for(const q of obs)if(x>q.x1-.45&&x<q.x2+.45&&y<q.y2+.45&&y>q.y1-.45){hit=true;break}}if(!hit)break;top+=.35}
+ return[r[0],r[1]]}
 function throwCrate(){const c=ST.carry;ST.carry=null;c.held=false;c.noPlayer=.35;c.b.setGravityScale(1);ST.throwT=.3;ST.noGrab=.45;
  const p=c.b.getPosition();let vx=ST.face*9,vy=6;const t=throwTarget(c);if(t){if(t.any&&Math.abs(t.x-p.x)>.6)ST.face=Math.sign(t.x-p.x);[vx,vy]=throwVel(p,t)}
  c.b.setLinearVelocity(V(vx,vy));c.b.setAngularVelocity(-ST.face*6);c.thrown=1.2;SFX.throw();addShake(.1);vib(8);LV.onThrow&&LV.onThrow(c,t)}
@@ -113,7 +118,7 @@ function unhook(boost){if(!ST.hook)return;LV.world.destroyJoint(ST.hook);ST.hook
  if(boost){const P=ST.P,v=P.getLinearVelocity();if(r&&r.land){launchTo(r.land.x,r.land.y,1.4)}else P.setLinearVelocity(V(v.x*TU.relBoost,Math.max(v.y*TU.relBoost,0)+TU.relUp));SFX.release();const p=P.getPosition();wburst(p.x,p.y,10,'#bff',4,.4)}}
 // баллистика «точно на площадку»: управление выключено на время полёта
 function launchTo(tx,ty,apex){ty+=.85;const P=ST.P,p=P.getPosition();const g=-TU.g,gf=g*TU.fallMul;const top=Math.max(ty,p.y)+(apex||1.6);const vy=Math.sqrt(2*g*Math.max(.3,top-p.y));const t=vy/g+Math.sqrt(2*Math.max(.05,top-ty)/gf);const vx=(tx-p.x)/t;
- P.setLinearVelocity(V(vx,vy));ST.launch=t+.05;ST.face=Math.sign(vx)||ST.face;ST.dash=0;P.setGravityScale(1);ST.airDash=true}
+ P.setLinearVelocity(V(vx,vy));ST.launch=t+.05;ST.lt={x:tx,y:ty};ST.face=Math.sign(vx)||ST.face;ST.dash=0;P.setGravityScale(1);ST.airDash=true}
 function teleport(x,y){if(ST.hook)unhook(false);ST.P.setTransform(V(x,y),0);ST.P.setLinearVelocity(V(0,0));ST.launch=0;ST.dash=0}
 // ---------- шаг физики ----------
 function stepWorld(dt){const L=LV,P=ST.P;L.t+=dt;readInput();
@@ -140,7 +145,9 @@ function stepWorld(dt){const L=LV,P=ST.P;L.t+=dt;readInput();
   if(r.good===false){r.slipAt-=dt;if(r.slipAt<=0){r.slip=1.2;unhook(false);P.setLinearVelocity(V(v.x*.3,-2));SFX.slip();vib(30);addShake(.2);wburst(r.x,r.y,16,'#ff6a5a',4,.5);ST.react=1;L.onSlip&&L.onSlip(r)}}
   else if(r.land){const sd=Math.sign(r.land.x-r.x);if((p.x-r.x)*sd>.9&&v.y>-.5&&ST.hookT>.35)unhook(true)}
   ST.face=Math.sign(v.x)||ST.face;return finish(dt)}
- else if(ST.launch>0){ST.launch-=dt;if(vy<0)vy+=TU.g*(TU.fallMul-1)*dt}
+ else if(ST.launch>0){ST.launch-=dt;if(vy<0)vy+=TU.g*(TU.fallMul-1)*dt;
+  // наведение: если стенка погасила скорость — после подъёма над ней всё равно долетаем до цели
+  if(ST.lt){const g=-TU.g,gf=g*TU.fallMul;const top=p.y+(vy>0?vy*vy/(2*g):0);if(top>ST.lt.y){const tr=(vy>0?vy/g:0)+Math.sqrt(2*Math.max(.05,top-ST.lt.y)/gf);vx=(ST.lt.x-p.x)/Math.max(.12,tr);ST.launch=Math.max(ST.launch,tr)}}}
  else{const target=ix*TU.run;const a=grounded?(ix?TU.accG:TU.decG):TU.accA;const dv=target-vx;vx+=Math.sign(dv)*Math.min(Math.abs(dv),a*dt);
   if(ST.buffer>0&&ST.coyote>0){vy=TU.jumpV;ST.buffer=0;ST.coyote=0;SFX.jump();wburst(p.x,p.y-.85,6,'#fff',2,.25);L.onJump&&L.onJump()}
   if(!INP.jump&&vy>0&&!ST.jumpCut&&!grounded&&ctrl){vy*=TU.jumpCut;ST.jumpCut=true}
@@ -246,7 +253,7 @@ function drawStep(s,x1,y1,x2,y2,K){const st=s.st;X.save();const g=X.createLinear
  X.strokeStyle='#3a1a08';X.lineWidth=2;X.stroke();X.fillStyle='#ffd27a';rr(x1-2,y1-2,x2-x1+4,K*.14,4);X.fill();
  // пружинки по бокам
  X.strokeStyle='rgba(255,220,140,.6)';X.lineWidth=2;for(let yy=y1+K*.3;yy<y2-4;yy+=K*.22){X.beginPath();X.moveTo(x1+4,yy);X.lineTo(x1+K*.18,yy+K*.11);X.stroke();X.beginPath();X.moveTo(x2-4,yy);X.lineTo(x2-K*.18,yy+K*.11);X.stroke()}
- if(st.v!=null&&st.show!==false){const pw=Math.min(K*.95,(x2-x1)*.8);const cy=Math.max(y1+pw*.62,Math.min(y2-pw*.6,y1+pw*.7));if(y2-y1>pw*1.0){X.fillStyle=st.glow?'#fff3c4':'#fffaf0';rr((x1+x2)/2-pw/2,cy-pw/2,pw,pw,pw*.2);X.fill();X.strokeStyle='#4a2b12';X.lineWidth=2;X.stroke();valDraw(st.v,(x1+x2)/2,cy,pw,{box:[x1,y1,x2,y2],id:'step'})}}
+ if(st.v!=null&&st.show!==false){const pw=Math.min(K*.95,(x2-x1)*.8,(y2-y1)*.8);const cy=Math.max(y1+pw*.62,Math.min(y2-pw*.6,y1+pw*.7));if(pw>K*.35){X.fillStyle=st.glow?'#fff3c4':'#fffaf0';rr((x1+x2)/2-pw/2,cy-pw/2,pw,pw,pw*.2);X.fill();X.strokeStyle='#4a2b12';X.lineWidth=2;X.stroke();valDraw(st.v,(x1+x2)/2,cy,pw,{box:[x1,y1,x2,y2],id:'step'})}}
  X.restore()}
 function drawWorld(){const L=LV,K=H/VH;X.setTransform(DPR,0,0,DPR,0,0);
  // фон: параллакс зеркальной плиткой
@@ -303,7 +310,8 @@ function drawWorld(){const L=LV,K=H/VH;X.setTransform(DPR,0,0,DPR,0,0);
  for(let i=L.floats.length-1;i>=0;i--){const f=L.floats[i];f.t+=1/60;if(f.t>1.3){L.floats.splice(i,1);continue}const [x,y]=w2s(f.x,f.y+f.t*.8);X.globalAlpha=clamp((1.3-f.t)*3,0,1);txt(f.s,x,y,K*.7*(1+Math.max(0,.3-f.t)),f.col,{f:NUM,lw:6});X.globalAlpha=1}
  X.restore();
  if(FX.flash>0){X.fillStyle=FX.flashC;X.globalAlpha=FX.flash;X.fillRect(0,0,W,H);X.globalAlpha=1;FX.flash=Math.max(0,FX.flash-1/60*3)}}
-function drawSign(s,K){const n=s.vals.length,ts=s.size*K,gap=ts*.18;const w=n*ts+(n-1)*gap+ts*.5,h=ts*1.5;const [cx,cy]=w2s(s.x,s.y);const x0=cx-w/2,y0=cy-h/2;
+function drawSign(s,K){const n=s.vals.length,ts=s.size*K,gap=ts*.18;const w=n*ts+(n-1)*gap+ts*.5,h=ts*1.5;const [cx,cy]=w2s(s.x,s.y);const x0=cx-w/2,y0=cy-h/2;if(G.boardOn){const bb=(safeT()+92)*S+OY;const a=clamp((y0-bb+10)/40,0,1);if(a<=.02)return;X.save();X.globalAlpha=a;drawSign0(s,K,n,ts,gap,w,h,cx,cy,x0,y0);X.restore();return}drawSign0(s,K,n,ts,gap,w,h,cx,cy,x0,y0)}
+function drawSign0(s,K,n,ts,gap,w,h,cx,cy,x0,y0){
  X.save();X.strokeStyle='#5a3410';X.lineWidth=4;X.beginPath();X.moveTo(cx-w*.3,y0+h);X.lineTo(cx-w*.3,y0+h+K*(s.post||0));X.moveTo(cx+w*.3,y0+h);X.lineTo(cx+w*.3,y0+h+K*(s.post||0));X.stroke();
  const g=X.createLinearGradient(0,y0,0,y0+h);g.addColorStop(0,'#3a2a5a');g.addColorStop(1,'#241838');X.fillStyle=g;rr(x0,y0,w,h,ts*.25);X.fill();X.lineWidth=Math.max(3,ts*.08);X.strokeStyle='#e0b25a';X.stroke();
  for(let i=0;i<n;i++){const v=s.vals[i];const x=x0+ts*.25+i*(ts+gap)+ts/2,y=cy;const q=v==='?';X.fillStyle=q?'rgba(255,224,102,.25)':'#fffaf0';if(s.mark===i)X.fillStyle='#ffd0c8';rr(x-ts/2,y-ts/2,ts,ts,ts*.18);X.fill();if(q){X.setLineDash([5,4]);X.strokeStyle='#ffe066';X.lineWidth=2.5;X.stroke();X.setLineDash([])}

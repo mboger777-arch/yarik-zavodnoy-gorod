@@ -80,7 +80,8 @@ const PORT={yarik:['y_point',45,25,210],ulya:['u_talk',90,0,210],popr:['p_talk',
 function drawHUD(){const L=LV;
  if(ST.ctrl&&!L.won)drawControls();
  const busy=!!talk;
- if(L.task&&L.task.vals&&!busy&&(!L.task.solved||(L.hudFlash!=null&&L.t-L.hudFlash<1.6)))drawTaskBoard(L.task.vals,640,safeT()+44,!!L.task.solved);
+ G.boardOn=!!(L.task&&L.task.vals&&!busy&&(!L.task.solved||(L.hudFlash!=null&&L.t-L.hudFlash<1.6)));
+ if(G.boardOn)drawTaskBoard(L.task.vals,640,safeT()+44,!!L.task.solved);
  const x0=safeR()-58,y0=safeT()+40;X.fillStyle='rgba(43,25,58,.82)';rr(x0-62,y0-30,120,60,30);X.fill();X.strokeStyle='#e0b25a';X.lineWidth=3;X.stroke();spr('gear',x0-30,y0,44,{rot:T*.6});
  txt(NGEARS()+'/5',x0+16,y0+2,32,'#ffe28a',{f:NUM,st:'#2a1206',lw:6,box:[x0-10,y0-30,x0+58,y0+30],id:'gears',kind:'num'});
  const tk=T-L.titleT;if(tk<3&&!busy){X.globalAlpha=clamp(Math.min(tk*3,(3-tk)*2),0,1);plate((L.idx<5?(L.idx+1)+'. ':'')+LVNAME[L.idx],640,safeT()+44,520,70,46,{id:'lvtitle'});X.globalAlpha=1}
