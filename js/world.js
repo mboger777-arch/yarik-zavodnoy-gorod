@@ -220,7 +220,7 @@ function pose(){const v=ST.P.getLinearVelocity();const grounded=ST.ground>0&&v.y
  if(ST.cheer>0&&grounded)return'y_cheer';if(grounded&&Math.abs(v.x)>1){ST.run+=Math.abs(v.x)/60;return(Math.floor(ST.run/.55)%2)?'y_run2':'y_run1'}
  if(talk&&talk.who==='yarik')return'y_point';return'y_idle'}
 const SIDE={y_run1:1,y_run2:1,y_jump:0,y_dash:1,y_swing:0,y_carry:0,y_throw:1,y_react:0};
-function drawHero(n,x,y,face,o){o=o||{};const K=H/VH;const [sx,sy]=w2s(x,y);const h=poseH(n)*K;const side=SIDE[n];const flip=side?face<0:false;
+function drawHero(n,x,y,face,o){o=o||{};const K=H/VH;const [sx,sy]=w2s(x,y);const BR={y_idle:1,y_point:1,y_cheer:1};const h=poseH(n)*K*(BR[n]&&!o.a?1+.012*Math.sin(T*2.4):1);const side=SIDE[n];const flip=side?face<0:false;
  spr(n,sx,sy,h,{ax:.5,ay:1,flip,blink:BLINKS.includes(n)?3:0,rot:o.rot||0,a:o.a})}
 function drawCrateAt(c,x,y,ang,K){const [sx,sy]=w2s(x,y);const s=c.s*2*K;X.save();X.translate(sx+(c.shake?Math.sin(T*60)*c.shake*4:0),sy);X.rotate(-ang);
  if(c.ball){if(okI(IM.ball))X.drawImage(IM.ball,-s/2,-s/2,s,s);else{X.fillStyle='#c9952e';X.beginPath();X.arc(0,0,s/2,0,7);X.fill()}}
@@ -323,6 +323,6 @@ function drawPopr(K){if(!POP.on||LV.noPopr)return;const p=ST.P.getPosition();POP
  POP.vy-=30/60;POP.y+=POP.vy/60;if(POP.y<=floor){POP.y=floor;POP.vy=Math.abs(dx)>.6||POP.hop>0?7.5:0;if(POP.hop>0)POP.hop--}
  if(Math.abs(dx)>.3)POP.face=Math.sign(dx);
  const air=POP.y>floor+.05;const n=air?'p_jump':(talk&&talk.who==='popr'?'p_talk':'p_sit');const [x,y]=w2s(POP.x,POP.y);
- spr(n,x,y,K*(n==='p_jump'?1.25:1.05),{ax:.5,ay:1,blink:n!=='p_jump'?7:0,flip:n==='p_jump'&&POP.face<0})}
+ spr(n,x,y,K*(n==='p_jump'?1.25:1.05*(1+.015*Math.sin(T*3))),{ax:.5,ay:1,blink:n!=='p_jump'?7:0,flip:n==='p_jump'&&POP.face<0})}
 function drawNpc(n,K){const [x,y]=w2s(n.x,n.y);let im=n.im;if(!im){if(n.who==='u')im=talk&&talk.who==='ulya'?'u_talk':(n.cheer?'u_cheer':'u_idle');if(n.who==='k')im='k_laugh'}
- spr(im,x,y+Math.sin(T*2+n.x)*1.5,K*n.h,{ax:.5,ay:1,blink:BLINKS.includes(im)?11:0,flip:n.flip})}
+ spr(im,x,y,K*n.h*(1+.012*Math.sin(T*2.2+n.x)),{ax:.5,ay:1,blink:BLINKS.includes(im)?11:0,flip:n.flip})}
