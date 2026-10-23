@@ -1,0 +1,202 @@
+{
+ "y_idle": {
+  "w": 257,
+  "h": 640,
+  "edge": false
+ },
+ "y_cheer": {
+  "w": 395,
+  "h": 640,
+  "edge": false
+ },
+ "y_point": {
+  "w": 267,
+  "h": 640,
+  "edge": false
+ },
+ "y_swing": {
+  "w": 289,
+  "h": 640,
+  "edge": false
+ },
+ "y_carry": {
+  "w": 220,
+  "h": 640,
+  "edge": false
+ },
+ "y_throw": {
+  "w": 506,
+  "h": 640,
+  "edge": false
+ },
+ "y_react": {
+  "w": 360,
+  "h": 640,
+  "edge": false
+ },
+ "u_idle": {
+  "w": 313,
+  "h": 640,
+  "edge": false
+ },
+ "u_talk": {
+  "w": 390,
+  "h": 640,
+  "edge": false
+ },
+ "u_cheer": {
+  "w": 390,
+  "h": 640,
+  "edge": false
+ },
+ "k_squat": {
+  "w": 422,
+  "h": 640,
+  "edge": false
+ },
+ "k_fly": {
+  "w": 386,
+  "h": 640,
+  "edge": false
+ },
+ "k_hit": {
+  "w": 435,
+  "h": 640,
+  "edge": false
+ },
+ "crate": {
+  "w": 400,
+  "h": 381,
+  "edge": false
+ },
+ "ring": {
+  "w": 325,
+  "h": 400,
+  "edge": false
+ },
+ "tramp": {
+  "w": 400,
+  "h": 219,
+  "edge": false
+ },
+ "gear": {
+  "w": 395,
+  "h": 400,
+  "edge": false
+ },
+ "mouse": {
+  "w": 400,
+  "h": 380,
+  "edge": false
+ },
+ "mouse_dz": {
+  "w": 388,
+  "h": 400,
+  "edge": false
+ },
+ "ball": {
+  "w": 393,
+  "h": 400,
+  "edge": false
+ },
+ "medal": {
+  "w": 273,
+  "h": 400,
+  "edge": false
+ },
+ "board": {
+  "w": 740,
+  "h": 563,
+  "edge": false
+ },
+ "btn_t": {
+  "w": 387,
+  "h": 400,
+  "edge": false
+ },
+ "btn_o": {
+  "w": 387,
+  "h": 400,
+  "edge": false
+ },
+ "hook": {
+  "w": 198,
+  "h": 400,
+  "edge": false
+ },
+ "slot": {
+  "w": 400,
+  "h": 392,
+  "edge": false
+ },
+ "gate": {
+  "w": 385,
+  "h": 400,
+  "edge": false
+ },
+ "hat": {
+  "w": 400,
+  "h": 372,
+  "edge": false
+ },
+ "flipper": {
+  "w": 400,
+  "h": 240,
+  "edge": false
+ },
+ "y_run1": {
+  "w": 491,
+  "h": 640,
+  "edge": false
+ },
+ "y_run2": {
+  "w": 482,
+  "h": 640,
+  "edge": false
+ },
+ "y_jump": {
+  "w": 326,
+  "h": 640,
+  "edge": false
+ },
+ "y_dash": {
+  "w": 640,
+  "h": 619,
+  "edge": false
+ },
+ "p_sit": {
+  "w": 571,
+  "h": 640,
+  "edge": false
+ },
+ "p_jump": {
+  "w": 523,
+  "h": 640,
+  "edge": false
+ },
+ "p_ball": {
+  "w": 640,
+  "h": 638,
+  "edge": false
+ },
+ "p_talk": {
+  "w": 606,
+  "h": 640,
+  "edge": false
+ },
+ "k_laugh": {
+  "w": 383,
+  "h": 640,
+  "edge": false
+ },
+ "k_dizzy": {
+  "w": 324,
+  "h": 640,
+  "edge": false
+ },
+ "k_kind": {
+  "w": 449,
+  "h": 640,
+  "edge": false
+ }
+}
