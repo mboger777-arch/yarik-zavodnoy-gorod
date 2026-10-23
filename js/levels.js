@@ -32,6 +32,7 @@ LEVELS[0]=function(){const L=lvBase(0,{bg:'l1',music:'level',spawn:{x:-2,y:1.2},
  const s3=mk.sign(69,3.6,['c','c','t','c','c','t','?'],{post:3.6,size:.8});T.push({vals:s3.vals,sign:s3,ans:'c',line:'l1_t3',ok:'l1_ok3',bad:'l1_bad'});gap(72,['c','t','s'],0,'c',2);
  mk.ground(84,-9,101,0);mk.ground(101,-9,102,14);L.exitX=94;
  L.ringHint=true;
+ L.camFn=(tx,ty)=>{const p=ST.P.getPosition();for(const E of [16,44,72]){if(p.x>E-6.5&&p.x<E+15&&p.y>-1.5)return[tx,Math.max(ty,3.2)]}return[tx,ty]};
  trig(-100,()=>{run(async()=>{await wait(500);await say('l1_s');if(!SV.tut.move)hintOn('move','o_move')})});
  trig(3.2,()=>hintOn('jump','o_jump'));trig(8,()=>hintOn('dash','o_dash'));
  trig(11.5,()=>{hintDone('dash');startTask(0);setTimeout(()=>{if(LV===L&&!T[0].solved){LV.hint='hook';sayQ('o_hook')}},300)});
@@ -150,7 +151,7 @@ LEVELS[4]=function(){const L=lvBase(4,{bg:'l5',music:'level',spawn:{x:0,y:1.2},b
  // кран-крюк для шестерёнки
  mk.ring(38,7.6);mk.ring(43,7.9,{land:{x:47.2,y:8.2}});mk.ground(45.5,7.8,49,8.2,{oneway:true});mk.gear(47.2,9,4);
  L.exitX=54;L.camFn=(tx,ty)=>{const p=ST.P.getPosition();if(p.x>15.5&&p.x<28&&p.y<3)return[tx,3.6];return[tx,ty]};
- L.targets=c=>L.slots.filter(s=>!s.solved).map(s=>({x:s.x,y:s.y,any:true}));
+ L.targets=c=>L.slots.filter(s=>!s.solved).map(s=>({x:s.x,y:s.y,any:true,pri:L.task&&L.task.sl===s?2:0}));
  L.update=dt=>{lvCommon(dt);L.spawnT-=dt;const live=L.balls.filter(b=>!b.dead&&!b.solved);if(live.length<4&&L.spawnT<=0&&!T.every(t=>t.solved)){spawn();L.spawnT=1.2}
   for(const b of live){const q=b.b.getPosition();if(!b.held&&q.x<14.4&&q.y<1.2&&q.x>-1){const v=b.b.getLinearVelocity();b.b.setLinearVelocity(V(Math.max(v.x,2.2),v.y))}}
   if(!L.task||L.task.solved){const n=T.findIndex(t=>!t.solved);if(n>=0&&L.t>6)startTask(n)}};
