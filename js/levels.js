@@ -54,7 +54,7 @@ LEVELS[1]=function(){const L=lvBase(1,{bg:'l2',music:'level2',spawn:{x:0,y:1.2},
  const stair=(x0,base,vals,ans,ti,boxes,land,bx)=>{const st=[];vals.forEach((v,i)=>st.push(mk.step(x0+i*1.3,1.3,v*k,v,{base})));
   const sx=x0+vals.length*1.3,h=ans*k;const b=L.world.createBody({type:'kinematic',position:V(sx,base+.2-h/2)});b.createFixture(pl.Box(.65,h/2),{friction:.8,userData:ud('ground')});
   const s={x:sx,w:1.3,h,v:'?',b,base,kin:1,show:true};L.steps.push(s);L.solids.push({x1:sx-.65,y1:base,x2:sx+.65,y2:base+h,b,look:'step',st:s,clipY:base});
-  const sl=mk.slot(sx,base+.85,ans,{size:.62});
+  const sl=mk.slot(sx,base+.85,ans,{size:.62,spit:[4.2,15]});
   const sign=mk.sign(x0+1.6,base+4.7,vals.concat(['?']),{post:0});
   T.push({sl,vals:sign.vals,sign,ans,line:'l2_t'+(ti+1),ok:'l2_ok'+(ti+1),bad:'l2_bad',auto:false});
   boxes.forEach((v,j)=>mk.crate(v,bx[j],base+.6));

@@ -188,8 +188,8 @@ function handleEv(e){const L=LV,P=ST.P;
   if(ok){sl.solved=true;c.solved=true;if(ST.carry===c)ST.carry=null;c.held=false;const tx=sl.px==null?sl.x:sl.px,ty=sl.py==null?sl.y:sl.py;
    setTimeout(()=>{try{c.b.setType('static');c.b.setTransform(V(tx,ty),0);c.b.setLinearVelocity(V(0,0))}catch(_){}},0);
    hitstop(.1);FX.slow=.35;addShake(.45);wburst(tx,ty,40,'#ffd54a',8,.9);ringFX(tx,ty,'#ffd54a',3);SFX.ok();vib([20,40,30]);ST.cheer=1.4;sl.onOk&&sl.onOk(c)}
-  else{sl.rej=.6;if(ST.carry===c)ST.carry=null;c.held=false;c.b.setGravityScale(1);const p=P.getPosition();const dir=Math.sign(p.x-sl.x)||-1;
-   setTimeout(()=>{c.b.setLinearVelocity(V(dir*4.5,9));c.b.setAngularVelocity(dir*8)},0);c.noPlayer=.6;c.shake=1;c.ng=2.5;
+  else{sl.rej=.6;c.thrown=0;c.tgt=null;if(ST.carry===c)ST.carry=null;c.held=false;c.b.setGravityScale(1);const p=P.getPosition();const dir=Math.sign(p.x-sl.x)||-1;
+   setTimeout(()=>{c.b.setLinearVelocity(V(dir*(sl.spit?sl.spit[0]:5),sl.spit?sl.spit[1]:9));c.b.setAngularVelocity(dir*8)},0);c.noPlayer=.6;c.shake=1;c.ng=2.5;
    addShake(.2);wburst(sl.x,sl.y,14,'#ff6a5a',5,.45);SFX.spit();vib(30);ST.react=.8;floatT('?','#ff8a7a',sl.x,sl.y+1);sl.onBad&&sl.onBad(c)}}
  if(e.e==='mouseHit'){const m=e.m,p=P.getPosition(),q=m.b.getPosition(),v=P.getLinearVelocity();
   if(m.state==='dead')return;
