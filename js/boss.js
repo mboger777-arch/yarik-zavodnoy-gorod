@@ -8,8 +8,8 @@ function BOSS(){const L=newLevel({idx:5,bg:'boss',music:'boss',spawn:{x:3,y:1.2}
  L.tasks=BPH.map(p=>({vals:p.vals.slice(),hud:null,ans:p.ans,line:p.line}));L.tasks.forEach(t=>t.hud=t.vals);L.cur=0;L.task=L.tasks[0];
  const B=L.b={x:15,y:0,st:'intro',t:0,ph:0,fx:15,tx:15,face:-1,waves:[],slot:null,laughT:0,key:0,keyV:1,waveSaid:0,hits:0};
  function newSlot(){const p=BPH[B.ph];const sl=mk.slot(10,4.3,p.ans,{size:.75});sl.onOk=c=>hit(c);sl.onBad=()=>{sayNow('b_miss');SFX.laugh();B.laughT=1.4};B.slot=sl}
- function spill(){const p=BPH[B.ph];const px=ST.P.getPosition().x;let xs=[4.2,10,15.8].sort(()=>Math.random()-.5);
-  p.tiles.forEach((v,i)=>{let x=xs[i];if(Math.abs(x-B.x)<1.4)x=clamp(x+(x<10?2:-2),2,18);const c=mk.crate(v,x,3.4+i*.3,{s:.55});c.b.setLinearVelocity(V(rnd(-1,1),2));L.tiles.push(c);wburst(x,3.4,10,'#ffd27a',4,.4)});SFX.pop()}
+ function spill(){const p=BPH[B.ph];const px=ST.P.getPosition().x;let xs=[4.2,6.8,13.2,15.8].filter(x=>Math.abs(x-B.x)>1.5).sort(()=>Math.random()-.5);
+  p.tiles.forEach((v,i)=>{let x=xs[i%xs.length]+(i>=xs.length?.8:0);const c=mk.crate(v,x,3.4+i*.3,{s:.55});c.b.setLinearVelocity(V(rnd(-1,1),2));L.tiles.push(c);wburst(x,3.4,10,'#ffd27a',4,.4)});SFX.pop()}
  function clearTiles(){for(const c of L.tiles){if(c.solved)continue;if(ST.carry===c)dropCarry();c.dead=1;c.hide=1;try{c.b.setActive(false)}catch(_){}const q=c.b.getPosition();wburst(q.x,q.y,10,'#fff',3,.4)}L.tiles=L.tiles.filter(c=>!c.dead)}
  function hit(c){c.hide=1;c.dead=1;try{c.b.setActive(false)}catch(_){}const t=L.tasks[B.ph];const q=t.vals.indexOf('?');if(q>=0)t.vals[q]=t.ans;t.solved=1;L.hudFlash=L.t;
   B.ph++;B.hits++;B.st='hit';B.t=0;B.y=0;B.keyV=14;hitstop(.22);FX.slow=.25;FX.flash=.7;FX.flashC='#fff3c0';addShake(.8);SFX.hit();vib([40,40,60]);wburst(B.x,2,40,'#ffd54a',9,.8);floatT('Бум!','#fff',B.x,3.4);

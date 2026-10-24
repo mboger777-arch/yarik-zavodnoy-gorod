@@ -217,28 +217,31 @@ async def main():
       await start_level(5);await W8(500);await shot('70_boss_start')
       await until("__T.st().b&&__T.st().b.st!=='intro'",25000)
       PH=[('s','c'),(17,18),(25,20)]
+      async def bst():
+        s=await st();return s.get('b') if s else None
+      async def tile(v,exp,k):
+        for a in range(6):
+          b=await bst()
+          if not b or b['ph']!=k: log(' tile skip',v,b,await st());return exp
+          cs=await ev("LV?__T.crates():[]")
+          c=[c for c in cs if str(c['v'])==str(v) and not c['solved'] and not c['dead']]
+          if not c: await W8(800);continue
+          b0=await ev("BADN")
+          await ev(f"__T.grab({c[0]['i']})");await W8(200)
+          s=await st()
+          if not s or s.get('carry') is None: await W8(500);continue
+          await ev(f"__T.face({1 if s['x']<10 else -1})");await key('KeyX');await W8(1500)
+          b=await bst();b1=await ev("BADN")
+          if exp and (not b or b['ph']>k or b['st'] in('hit','down')): return True
+          if not exp and b1>b0: return True
+          log(' boss retry',v,b,b0,b1);await W8(700)
+        FAIL.append(f'boss ph{k} {v} {exp}');return False
       for k,(wr,ok) in enumerate(PH):
-        await until(f"__T.st().b&&__T.st().b.ph=={k}&&__T.st().b.st!=='hit'&&__T.crates().length>0",12000)
+        await until(f"!LV||(__T.st().b&&__T.st().b.ph=={k}&&__T.st().b.st!=='hit'&&__T.crates().some(c=>!c.dead&&!c.solved))",12000)
         await notalk(8000);await W8(500)
-        async def tile(v,exp):
-          for a in range(6):
-            cs=await ev("__T.crates()")
-            c=[c for c in cs if str(c['v'])==str(v) and not c['solved'] and not c['dead']]
-            if not c: await W8(800);continue
-            b0=await ev("BADN");ph0=(await st())['b']['ph']
-            # подойти к плитке, лучше сбоку от слота
-            await ev(f"__T.grab({c[0]['i']})");await W8(200)
-            s=await st()
-            if s['carry'] is None: await W8(500);continue
-            await ev(f"__T.face({1 if s['x']<10 else -1})");await key('KeyX');await W8(1500)
-            s=await st();b1=await ev("BADN")
-            if exp and (s['b']['ph']>ph0 or s['b']['st'] in('hit','down')): return True
-            if not exp and b1>b0: return True
-            log(' boss retry',v,s['b'],b0,b1);await W8(700)
-          FAIL.append(f'boss ph{k} {v} {exp}');return False
-        r1=await tile(wr,False);log('boss',k,'wrong',r1)
+        r1=await tile(wr,False,k);log('boss',k,'wrong',r1)
         if k==0: await shot('71_boss_bad')
-        r2=await tile(ok,True);log('boss',k,'hit',r2)
+        r2=await tile(ok,True,k);log('boss',k,'hit',r2)
         if k==1: await W8(300);await shot('72_boss_hit')
         await W8(2600)
       await until("G.scene==='fin'",15000);await W8(4000);await shot('80_fin');await audit('fin')
