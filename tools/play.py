@@ -143,7 +143,7 @@ async def main():
         ok2=await until(f"__T.st().x>{E+12.5}&&__T.st().g",6000)
         log('L1',k,'solved',ok,'landed',ok2,round((await st())['x'],1))
         if not ok2: FAIL.append(f'L1 t{k} landing assist');await ev(f"__T.tp({E+14.2},2)")
-      await gear(39.6,5.6)
+      await gear(39.6,5.6);await ev("__T.tp(87,1.2)");await W8(500)
       await finish_level(0);await audit('map_after_L1')
     # ---------- L2
     if START<=1:
