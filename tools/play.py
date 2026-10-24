@@ -259,7 +259,20 @@ async def main():
     # ---------- Пинбол
     if await btn('pin',4000):
       await W8(1500);await shot('90_pin');await audit('pin')
-      log('pin keys',await ev("Object.keys(window.PIN||{}).slice(0,30)"))
+      SCP="SC.pin.P"
+      for i in range(60):
+        y=await ev(f"{SCP}.ball.getPosition().y")
+        fl=y<2.6
+        await ev(f"EXT.pl={str(fl).lower()};EXT.pr={str(fl).lower()};0");await W8(250)
+      await ev("EXT.pl=false;EXT.pr=false;0")
+      log('pin free play lit',await ev(f"{SCP}.lit"))
+      await shot('91_pin_play')
+      # гарантированный проход: шарик кладём над бамперами по порядку
+      for bi in range(5):
+        await ev(f"(()=>{{const P={SCP};const b=P.bump.find(q=>q.v==={(bi+1)*2});P.ball.setPosition(V(b.x,b.y+1.3));P.ball.setLinearVelocity(V(0,-6))}})();0");await W8(900)
+      log('pin lit',await ev(f"{SCP}.lit"),'done',await ev(f"{SCP}.done"))
+      if not await ev(f"{SCP}.done"): FAIL.append('pin not won')
+      await W8(2500);await shot('92_pin_win');await audit('pin_win')
     fps=await ev("G.fps()");log('FPS',fps,'ERR',errs[:8]);log('FAILS',FAIL)
     json.dump({'fps':fps,'errs':errs,'fail':FAIL,'aud':AUDS,'log':LOG},open(f'{OUT}/report.json','w'),ensure_ascii=False,indent=1,default=str)
     await b.close()
