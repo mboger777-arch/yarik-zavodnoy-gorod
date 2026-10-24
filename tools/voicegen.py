@@ -26,7 +26,7 @@ def man():
         f=f"{OUT}/{o['file']}"
         if os.path.exists(f): m[o['k']]=[o['file'],round(float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',f])),2)]
     open(R+'/js/voice.js','w').write('const VOICE='+json.dumps(m,ensure_ascii=False)+';\n');print('manifest',len(m),flush=True)
-def norm(s): s=s.lower().replace('ё','е');return re.sub(r'[^а-я0-9 ]',' ',s).split()
+def norm(s): s=s.replace('\u0301','').lower().replace('ё','е');return re.sub(r'[^а-я0-9 ]',' ',s).split()
 def wer(a,b):
     D=list(range(len(b)+1))
     for i,x in enumerate(a,1):
@@ -59,7 +59,7 @@ if jobs:
             hyp=' '.join(s.text for s in A.transcribe(L(fin),language='ru',beam_size=3)[0])
             e=min(wer(norm(t),norm(hyp)),numwer(o['t'],t,hyp))
             if best is None or e<best[0]: best=(e,fin,hyp)
-            if e<=0.08: break
+            if e<=float(os.environ.get('THR','0.08')): break
         os.replace(best[1],f"{OUT}/{o['file']}")
         log.write(json.dumps({'k':o['k'],'wer':round(best[0],3),'say':t,'hyp':best[2]},ensure_ascii=False)+'\n');log.flush()
         print(i,o['k'],round(best[0],3),best[2],flush=True)
