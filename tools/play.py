@@ -68,7 +68,7 @@ async def main():
         if jump and s['g'] and abs(s['vx'])<.5: await key('Space',200)
         await W8(60)
       await ev("__T.ext({x:0})");return (s['x']-x)*d>=0
-    async def throw_crate(v,near=None,expect_ok=True,tries=4,tx=None):
+    async def throw_crate(v,near=None,expect_ok=True,tries=6,tx=None):
       for k in range(tries):
         cs=await ev("__T.crates()")
         c=[c for c in cs if c['v']==v and not c['solved'] and not c['dead'] and not c['pinned']]
@@ -81,12 +81,14 @@ async def main():
         if tx is not None and abs(s['x']-tx)>8:
           await walkto(tx-7.5 if tx>s['x'] else tx+7.5,6000,jump=True);await W8(200)
           await ev(f"__T.face({1 if tx>(await st())['x'] else -1})")
+          if (await st())['carry']!=v: log('   carry lost on the way (mouse/hook), regrab',v);await W8(400);continue
         await key('KeyX')
         for _ in range(9):
           await W8(400);s=await st();n1=sum(1 for t in s['tasks'] if t);b1=await ev("BADN")
           if n1>n0 or b1>b0: break
         if expect_ok and n1>n0: log(' ok throw',v);return True
         if not expect_ok and b1>b0: log(' wrong throw spat',v);return True
+        log('   slog',await ev('(G.slog||[]).slice(-3)'))
         log(' throw retry',v,'bad',b0,b1,'solved',n0,n1,'carry',s['carry'])
         if tx is not None: log('   near',[(c['v'],round(c['x'],1),round(c['y'],1),c['solved']) for c in await ev('__T.crates()') if abs(c['x']-tx)<4],'me',round(s.get('x',0),1),round(s.get('y',0),1))
         await W8(600)
@@ -132,7 +134,7 @@ async def main():
         log('L1',k,'bad slips',await ev("BADN")-b0,'pos',round((await st())['x'],1))
         await notalk();s=await st()
         if abs(s['x']-(E-.5))>1.5: await walkto(E-.5,5000)
-        await W8(300);rs=[r for r in await ev("__T.rings()") if r['task']==k];good=[r for r in rs if r['good']][0]
+        await W8(900);rs=[r for r in await ev("__T.rings()") if r['task']==k];good=[r for r in rs if r['good']][0]
         await pg.touchscreen.tap(good['css'][0],good['css'][1])
         ok=await until(f"__T.st().tasks[{k}]",3000)
         if not ok:
