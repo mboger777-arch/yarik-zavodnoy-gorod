@@ -88,6 +88,7 @@ async def main():
         if expect_ok and n1>n0: log(' ok throw',v);return True
         if not expect_ok and b1>b0: log(' wrong throw spat',v);return True
         log(' throw retry',v,'bad',b0,b1,'solved',n0,n1,'carry',s['carry'])
+        if tx is not None: log('   near',[(c['v'],round(c['x'],1),round(c['y'],1),c['solved']) for c in await ev('__T.crates()') if abs(c['x']-tx)<4],'me',round(s.get('x',0),1),round(s.get('y',0),1))
         await W8(600)
       FAIL.append(f'throw {v} ok={expect_ok} L{(await st()).get("idx")}');return False
     async def finish_level(idx):
