@@ -209,7 +209,9 @@ async def main():
       await start_level(4);await notalk(20000);await W8(800);await shot('50_L5_start')
       for k,(ok,wr) in enumerate([(4,5),(6,7),(10,12)]):
         await until("__T.st().cur!=null&&!__T.st().talk",8000)
-        await until(f"__T.crates().some(c=>c.v=={wr}&&!c.solved&&!c.dead)",15000)
+        if not await until(f"__T.crates().some(c=>c.v=={wr}&&!c.solved&&!c.dead)",6000):
+          cs=[c['v'] for c in await ev("__T.crates()") if not c['solved'] and not c['dead'] and c['v'] not in (4,6,10)]
+          if cs: wr=cs[0]
         await throw_crate(wr,12,False);await notalk()
         if k==0: await shot('51_L5_bad')
         await until(f"__T.crates().some(c=>c.v=={ok}&&!c.solved&&!c.dead)",15000)

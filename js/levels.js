@@ -147,13 +147,14 @@ LEVELS[4]=function(){const L=lvBase(4,{bg:'l5',music:'level',spawn:{x:0,y:1.2},b
  L.gate=mk.gate(33,0,5);
  // конвейер шариков
  const seq=[4,6,10,5,7,9,12,3,8];let si=0;L.balls=[];
- const spawn=()=>{let v=seq[si%seq.length];si++;if(T[ans.indexOf(v)]&&T[ans.indexOf(v)].solved)return spawn();const c=mk.crate(v,1.5,4,{ball:true,s:.5});c.respawn=false;L.balls.push(c);ringFX(1.5,4,'#9ef3ff',1)};
+ const spawn=()=>{const cu=L.task&&!L.task.solved?ans[T.indexOf(L.task)]:null;const has=cu!=null&&L.balls.some(b=>!b.dead&&!b.solved&&b.v===cu);let v=seq[si%seq.length];si++;if(cu!=null&&!has&&si%2===0)v=cu;if(T[ans.indexOf(v)]&&T[ans.indexOf(v)].solved)return spawn();const c=mk.crate(v,1.5,4,{ball:true,s:.5});c.respawn=false;L.balls.push(c);ringFX(1.5,4,'#9ef3ff',1)};
  L.spawnT=0;
  // кран-крюк для шестерёнки
  mk.ring(38,7.6);mk.ring(43,7.9,{land:{x:47.2,y:8.2}});mk.ground(45.5,7.8,49,8.2,{oneway:true});mk.gear(47.2,9,4);
  L.exitX=54;L.camFn=(tx,ty)=>{const p=ST.P.getPosition();if(p.x>15.5&&p.x<28&&p.y<3)return[tx,3.6];return[tx,ty]};
  L.targets=c=>{const sl=L.task&&!L.task.solved?[L.task.sl]:L.slots.filter(s=>!s.solved);return sl.map(s=>({x:s.x,y:s.y,any:true,pri:2,direct:true}))};
- L.update=dt=>{lvCommon(dt);L.spawnT-=dt;const live=L.balls.filter(b=>!b.dead&&!b.solved);if(live.length<4&&L.spawnT<=0&&!T.every(t=>t.solved)){spawn();L.spawnT=1.2}
+ L.update=dt=>{lvCommon(dt);L.spawnT-=dt;const live=L.balls.filter(b=>!b.dead&&!b.solved);if(live.length>=4&&L.spawnT<=0&&L.task&&!L.task.solved){const cu=ans[T.indexOf(L.task)];if(!live.some(b=>b.v===cu)){const o=live.find(b=>!b.held&&b!==ST.carry);if(o){const q=o.b.getPosition();o.dead=1;o.hide=1;try{o.b.setActive(false)}catch(_){}wburst(q.x,q.y,12,'#9ef3ff',3,.4);live.splice(live.indexOf(o),1)}}}
+  if(live.length<4&&L.spawnT<=0&&!T.every(t=>t.solved)){spawn();L.spawnT=1.2}
   for(const b of live){const q=b.b.getPosition();if(!b.held&&q.x<14.4&&q.y<1.2&&q.x>-1){const v=b.b.getLinearVelocity();b.b.setLinearVelocity(V(Math.max(v.x,2.2),v.y))}}
   if(!L.task||L.task.solved){const n=T.findIndex(t=>!t.solved);if(n>=0&&L.t>6)startTask(n)}};
  L.onThrow=(c,t)=>{if(L.hint==='carry')hintDone('carry')};
