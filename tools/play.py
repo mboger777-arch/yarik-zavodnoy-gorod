@@ -63,6 +63,7 @@ async def main():
       await ev(f"__T.ext({{x:{d}}})")
       while time.time()-t0<timeout/1000:
         s=await st()
+        if 'x' not in s: return True
         if (s['x']-x)*d>=0: break
         if jump and s['g'] and abs(s['vx'])<.5: await key('Space',200)
         await W8(60)
@@ -97,10 +98,12 @@ async def main():
       await until("G.scene==='map'",15000);await W8(800)
     async def start_level(i):
       if i==START and START>0:
-        await ev(f"G.fast=true;go('play',{i})");await W8(900)
+        await ev(f"G.fast=true;for(let j=0;j<{i};j++)SV.done[j]=1;go('play',{i})");await W8(900)
       else:
         await until("G.scene==='map'",8000);await notalk(8000);await W8(400)
-        await btn('n'+str(i));await until("G.scene==='play'",5000);await W8(600)
+        if not await btn('n'+str(i),3000):
+          log('map node missing, scene',await ev("G.scene"));FAIL.append(f'map n{i}');await ev(f"go('play',{i})")
+        await until("G.scene==='play'",5000);await W8(600)
       await ev("G.fast=true")
     async def gear(x,y):
       await ev(f"__T.tp({x},{y})");await W8(500)

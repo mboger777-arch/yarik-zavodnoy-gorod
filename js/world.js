@@ -18,6 +18,7 @@ function newLevel(o){
   const pc=a.k==='player'?b:b.k==='player'?a:null;
   if(pc&&pc.k==='crate'){const cb=pc.c;if(cb&&(cb.held||cb.noPlayer>0||cb.pinned))c.setEnabled(false)}
   if(pc&&pc.k==='door'&&(pc.d.open||pc.d.good))c.setEnabled(false);
+  if(a.k==='crate'&&b.k==='crate'){for(const [x,y] of [[a.c,b.c],[b.c,a.c]])if(x&&y&&x.pass&&x.thrown>0&&y.pinned&&!y.imp)c.setEnabled(false)}
   if((a.k==='crate'&&b.k==='crate')){const A=a.c,B=b.c;if(A.held||B.held)c.setEnabled(false)}
   if((a.k==='crate'&&b.k==='oneway')||(b.k==='crate'&&a.k==='oneway')||(pc&&pc.k==='oneway')){// одностороння платформа: снизу проходим
    const o=a.k==='oneway'?b:a;const body=o.k==='player'?ST.P:o.c&&o.c.b;const ow=a.k==='oneway'?a:b;if(body){const v=body.getLinearVelocity(),p=body.getPosition();const bot=o.k==='player'?p.y-.8:p.y-(o.c.s||.5)*.9;if(v.y>.5||bot<ow.top-.25)c.setEnabled(false)}}});
@@ -101,7 +102,7 @@ function actionKind(){if(ST.carry)return'throw';if(ST.hook)return'hook';if(neare
 function grab(c){ST.carry=c;c.held=true;c.b.setGravityScale(0);c.b.setAngularVelocity(0);SFX.grab();vib(10);const q=c.b.getPosition();ringFX(q.x,q.y,'#7ef',.9);LV.onGrab&&LV.onGrab(c)}
 function dropCarry(){const c=ST.carry;if(!c)return;ST.carry=null;c.held=false;c.b.setGravityScale(1);c.noPlayer=.5}
 function throwTarget(c){if(!LV.targets)return null;const p=c.b.getPosition();let best=null,bd=1e9;for(const t of LV.targets(c)){const dx=t.x-p.x,dy=t.y-p.y;if(!t.any&&Math.sign(dx)!==ST.face&&Math.abs(dx)>1.2)continue;if(Math.abs(dx)>TU.throwMaxD||dy>9||dy<-6)continue;const d=Math.abs(dx)+Math.abs(dy)*.5-(t.pri||0)*3;if(d<bd){bd=d;best=t}}return best}
-function throwVel(p,t){const dx=t.x-p.x,dy=t.y-p.y;const g=-TU.g;// навесом: подбираем вершину дуги, чтобы ящик перелетел ступеньки и стенки
+function throwVel(p,t){const dx=t.x-p.x,dy=t.y-p.y;const g=-TU.g;if(t.direct){const tt=clamp(Math.hypot(dx,dy)/14,.3,.8);return[dx/tt,(dy+.5*g*tt*tt)/tt]}// навесом: подбираем вершину дуги, чтобы ящик перелетел ступеньки и стенки
  const xa=Math.min(p.x,t.x),xb=Math.max(p.x,t.x),obs=[];for(const q of (LV&&LV.solids)||[]){if(q.x2<xa-.2||q.x1>xb+.2||Math.abs((q.x1+q.x2)/2-t.x)<.6||q.y2>p.y+5)continue;obs.push(q)}
  const sol=top=>{const vy=Math.sqrt(2*g*top);const tt=vy/g+Math.sqrt(2*Math.max(.02,top-dy)/g);return[dx/tt,vy,tt]};
  let top=Math.max(0,dy)+clamp(Math.abs(dx)*.2,.9,2.4),r=sol(top);
@@ -109,7 +110,7 @@ function throwVel(p,t){const dx=t.x-p.x,dy=t.y-p.y;const g=-TU.g;// навесо
  return[r[0],r[1]]}
 function throwCrate(){const c=ST.carry;ST.carry=null;c.held=false;c.noPlayer=.35;c.b.setGravityScale(1);ST.throwT=.3;ST.noGrab=.45;
  const p=c.b.getPosition();let vx=ST.face*9,vy=6;const t=throwTarget(c);if(t){if(t.any&&Math.abs(t.x-p.x)>.6)ST.face=Math.sign(t.x-p.x);[vx,vy]=throwVel(p,t)}
- c.b.setLinearVelocity(V(vx,vy));c.b.setAngularVelocity(-ST.face*6);c.thrown=1.2;SFX.throw();addShake(.1);vib(8);LV.onThrow&&LV.onThrow(c,t)}
+ c.b.setLinearVelocity(V(vx,vy));c.b.setAngularVelocity(-ST.face*6);c.thrown=1.2;c.pass=!!(t&&t.direct);SFX.throw();addShake(.1);vib(8);LV.onThrow&&LV.onThrow(c,t)}
 function hookTo(r){const P=ST.P,p=P.getPosition();if(ST.hook)unhook(false);if(ST.carry)dropCarry();const L=Math.hypot(r.x-p.x,r.y-p.y);
  ST.hook=LV.world.createJoint(new pl.RopeJoint({bodyA:r.b,bodyB:P,localAnchorA:V(0,0),localAnchorB:V(0,.4),maxLength:L,collideConnected:false}));
  ST.ring=r;ST.hookT=0;ST.airDash=true;ST.dash=0;P.setGravityScale(1);r.pulse=0;r.used++;SFX.hook();vib(12);ringFX(r.x,r.y,'#9ff',1.2);
