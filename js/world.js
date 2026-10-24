@@ -168,7 +168,7 @@ function finish(dt){const L=LV,P=ST.P,p=P.getPosition();ST.dashCD-=dt;ST.throwT-
  // шестерёнки, предметы
  for(const g of L.gears){g.t+=dt;if(g.got)continue;if(Math.hypot(g.x-p.x,g.y-p.y)<1.1){g.got=1;SV.gears[g.i]=1;save();SFX.gear();vib([15,30,15]);wburst(g.x,g.y,30,'#ffd54a',6,.7);ringFX(g.x,g.y,'#ffd54a',2);floatT('+1','#ffd54a',g.x,g.y+.8);sayNow('g_gear')}}
  for(const it of L.items){it.t+=dt;if(it.got||it.hidden)continue;if(Math.hypot(it.x-p.x,it.y-p.y)<1.1){it.got=1;SFX.gear();wburst(it.x,it.y,24,'#c9a0ff',5,.6);ringFX(it.x,it.y,'#c9a0ff',1.6);it.on&&it.on(it)}}
- for(const sl of L.slots){if(sl.solved||!sl.act||sl.rej>0)continue;for(const c of L.crates){if(c.held||c.dead||c.solved||c.v==null)continue;const fly=c.thrown>0;if(!fly)continue;if(fly&&c.tgt&&c.tgt.x!=null&&(Math.abs(c.tgt.x-sl.x)>.05||Math.abs(c.tgt.y-sl.y)>.05))continue;const q=c.b.getPosition();const tol=sl.size+(fly?.3:.15);if(Math.abs(q.x-sl.x)<tol&&Math.abs(q.y-sl.y)<tol){L.ev.push({e:'slot',sl,c});break}}}
+ for(const sl of L.slots){if(sl.solved||!sl.act||sl.rej>0)continue;for(const c of L.crates){if(c.held||c.dead||c.solved||c.v==null)continue;const fly=c.thrown>0;if(!fly){if(c.spat===sl&&!c.held){const q=c.b.getPosition(),dx=q.x-sl.x,dy=q.y-sl.y;if(Math.abs(dx)<sl.size+.9&&Math.abs(dy)<sl.size+.9){const v=c.b.getLinearVelocity();if(Math.abs(v.y)<1.5){const d=Math.sign(dx)||c.spD||-1;c.b.setLinearVelocity(V(d*4,sl.spit?sl.spit[1]*.8:8));c.ng=Math.max(c.ng,1)}}else if(Math.abs(dx)>3||Math.abs(dy)>3)c.spat=null}continue}if(fly&&c.tgt&&c.tgt.x!=null&&(Math.abs(c.tgt.x-sl.x)>.05||Math.abs(c.tgt.y-sl.y)>.05))continue;const q=c.b.getPosition();const tol=sl.size+(fly?.3:.15);if(Math.abs(q.x-sl.x)<tol&&Math.abs(q.y-sl.y)<tol){L.ev.push({e:'slot',sl,c});break}}}
  // события
  while(L.ev.length){const e=L.ev.shift();handleEv(e)}
  for(const g of L.gates){const target=g.open?g.y0+g.h/2+g.h+.2:g.y0+g.h/2;const y=g.b.getPosition().y;g.b.setLinearVelocity(V(0,clamp((target-y)*4,-6,6)))}
@@ -183,12 +183,12 @@ function handleEv(e){const L=LV,P=ST.P;
   if(pd.to)launchTo(pd.to.x,pd.to.y,pd.apex||1.8);else{const v=P.getLinearVelocity();P.setLinearVelocity(V(v.x,pd.v));ST.launch=0}
   ST.airDash=true;pd.squash=1;ringFX(p.x,pd.y+.2,'#fd6',1.6);SFX.boing();addShake(.18);wburst(p.x,pd.y+.3,14,'#fd6',5,.5);vib(15);L.onPad&&L.onPad(pd)}
  if(e.e==='padc'){const c=e.c;if(c.held)return;const v=c.b.getLinearVelocity();c.b.setLinearVelocity(V(v.x,12));e.p.squash=.6;SFX.boing()}
- if(e.e==='slot'){const sl=e.sl,c=e.c;if(sl.solved||c.solved||!sl.act||c.v==null||sl.rej>0||(c.held&&!sl.grabOK))return;if(c.thrown>0&&c.tgt&&c.tgt.x!=null&&(Math.abs(c.tgt.x-sl.x)>.05||Math.abs(c.tgt.y-sl.y)>.05))return;
+ if(e.e==='slot'){const sl=e.sl,c=e.c;if(sl.solved||c.solved||!sl.act||c.v==null||sl.rej>0||(c.held&&!sl.grabOK))return;if(!(c.thrown>0))return;if(c.thrown>0&&c.tgt&&c.tgt.x!=null&&(Math.abs(c.tgt.x-sl.x)>.05||Math.abs(c.tgt.y-sl.y)>.05))return;
   const ok=typeof sl.want==='function'?sl.want(c.v):c.v===sl.want;
   if(ok){sl.solved=true;c.solved=true;if(ST.carry===c)ST.carry=null;c.held=false;const tx=sl.px==null?sl.x:sl.px,ty=sl.py==null?sl.y:sl.py;
    setTimeout(()=>{try{c.b.setType('static');c.b.setTransform(V(tx,ty),0);c.b.setLinearVelocity(V(0,0))}catch(_){}},0);
    hitstop(.1);FX.slow=.35;addShake(.45);wburst(tx,ty,40,'#ffd54a',8,.9);ringFX(tx,ty,'#ffd54a',3);SFX.ok();vib([20,40,30]);ST.cheer=1.4;sl.onOk&&sl.onOk(c)}
-  else{sl.rej=.6;c.thrown=0;c.tgt=null;if(ST.carry===c)ST.carry=null;c.held=false;c.b.setGravityScale(1);const p=P.getPosition();const dir=Math.sign(p.x-sl.x)||-1;
+  else{sl.rej=.6;c.thrown=0;c.tgt=null;c.spat=sl;if(ST.carry===c)ST.carry=null;c.held=false;c.b.setGravityScale(1);const p=P.getPosition();const dir=Math.sign(p.x-sl.x)||-1;c.spD=dir;
    setTimeout(()=>{c.b.setLinearVelocity(V(dir*(sl.spit?sl.spit[0]:5),sl.spit?sl.spit[1]:9));c.b.setAngularVelocity(dir*8)},0);c.noPlayer=.6;c.shake=1;c.ng=2.5;
    addShake(.2);wburst(sl.x,sl.y,14,'#ff6a5a',5,.45);SFX.spit();vib(30);ST.react=.8;floatT('?','#ff8a7a',sl.x,sl.y+1);sl.onBad&&sl.onBad(c)}}
  if(e.e==='mouseHit'){const m=e.m,p=P.getPosition(),q=m.b.getPosition(),v=P.getLinearVelocity();
