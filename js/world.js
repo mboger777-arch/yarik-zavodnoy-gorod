@@ -183,7 +183,7 @@ function handleEv(e){const L=LV,P=ST.P;
   if(pd.to)launchTo(pd.to.x,pd.to.y,pd.apex||1.8);else{const v=P.getLinearVelocity();P.setLinearVelocity(V(v.x,pd.v));ST.launch=0}
   ST.airDash=true;pd.squash=1;ringFX(p.x,pd.y+.2,'#fd6',1.6);SFX.boing();addShake(.18);wburst(p.x,pd.y+.3,14,'#fd6',5,.5);vib(15);L.onPad&&L.onPad(pd)}
  if(e.e==='padc'){const c=e.c;if(c.held)return;const v=c.b.getLinearVelocity();c.b.setLinearVelocity(V(v.x,12));e.p.squash=.6;SFX.boing()}
- if(e.e==='slot'){const sl=e.sl,c=e.c;if(sl.solved||c.solved||!sl.act||c.v==null||sl.rej>0||(c.held&&!sl.grabOK))return;
+ if(e.e==='slot'){const sl=e.sl,c=e.c;if(sl.solved||c.solved||!sl.act||c.v==null||sl.rej>0||(c.held&&!sl.grabOK))return;if(c.thrown>0&&c.tgt&&c.tgt.x!=null&&(Math.abs(c.tgt.x-sl.x)>.05||Math.abs(c.tgt.y-sl.y)>.05))return;
   const ok=typeof sl.want==='function'?sl.want(c.v):c.v===sl.want;
   if(ok){sl.solved=true;c.solved=true;if(ST.carry===c)ST.carry=null;c.held=false;const tx=sl.px==null?sl.x:sl.px,ty=sl.py==null?sl.y:sl.py;
    setTimeout(()=>{try{c.b.setType('static');c.b.setTransform(V(tx,ty),0);c.b.setLinearVelocity(V(0,0))}catch(_){}},0);
