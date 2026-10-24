@@ -215,6 +215,7 @@ function floatT(s,col,x,y){LV.floats.push({s,col,x,y,t:0})}
 function camStep(dt){const L=LV,p=ST.P.getPosition(),v=ST.P.getLinearVelocity();const K=H/VH,VW=W/K;
  let tx=p.x+ST.face*1.6+v.x*.15,ty=p.y+.6;
  if(ST.carry){const t=throwTarget(ST.carry);if(t)tx=(p.x+t.x)/2}
+ if(!ST.carry&&!ST.hook){let mx=-1e9;for(const r of LV.rings){if(r.hidden||r.task==null||(LV.tasks[r.task]&&LV.tasks[r.task].solved))continue;if(r.x>p.x-1&&r.x<p.x+11)mx=Math.max(mx,r.x)}if(mx>-1e9)tx=Math.max(tx,Math.min(mx+1.4-VW/2,p.x+VW/2-2.2))}// все кольца-ответы в кадре на узких экранах
  const nr=ST.hook?ST.ring:nearestRing();if(nr)ty=Math.max(ty,Math.min(nr.y-1.6,p.y+3.2));
  if(L.camFn){const o=L.camFn(tx,ty);tx=o[0];ty=o[1]}
  const c=L.cam;c.x+=(tx-c.x)*Math.min(1,dt*4);c.y+=(ty-c.y)*Math.min(1,dt*3);
