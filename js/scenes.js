@@ -96,7 +96,7 @@ function drawTalk(){if(!talk)return;const v=vis();const l=LINES[talk.k];if(!l)re
  const bw=Math.min(900,v.w-2*130-40),bx=640,bh=118,by=safeT()+8+bh/2;const k=ease(clamp((T-talk.t0)/.18,0,1));X.save();X.globalAlpha=k;
  X.fillStyle='rgba(255,250,236,.96)';rr(bx-bw/2,by-bh/2,bw,bh,26);X.fill();X.lineWidth=4;X.strokeStyle=who==='kav'||who==='kavk'?'#7a4ab0':who==='ulya'?'#d0602a':who==='popr'?'#e89a2a':who==='yarik'?'#2a9a94':'#8a6a3a';X.stroke();
  const P=PORT[who];const pr=bh*.42;const px=bx-bw/2+pr+14;
- if(P&&okI(IM[P[0]])){X.save();X.beginPath();X.arc(px,by,pr,0,7);X.fillStyle='#ffe7b8';X.fill();X.clip();X.drawImage(IM[P[0]],P[1],P[2],P[3],P[3],px-pr,by-pr,pr*2,pr*2);X.restore();X.beginPath();X.arc(px,by,pr,0,7);X.lineWidth=3;X.stroke()}
+ if(P&&okI(IM[P[0]])){X.save();X.beginPath();X.arc(px,by,pr,0,7);X.fillStyle='#ffe7b8';X.fill();X.clip();X.drawImage((okI(IM[P[0]+'_b'])&&blinkK(13))?IM[P[0]+'_b']:IM[P[0]],P[1],P[2],P[3],P[3],px-pr,by-pr,pr*2,pr*2);X.restore();X.beginPath();X.arc(px,by,pr,0,7);X.lineWidth=3;X.stroke()}
  else{X.save();X.translate(px,by);X.rotate(T);if(okI(IM.gear))X.drawImage(IM.gear,-pr,-pr,pr*2,pr*2);X.restore()}
  const tx0=px+pr+16,tw=bx+bw/2-18-tx0;textIn(l.t,tx0+tw/2,by,tw,bh-20,36,'#2a1606',{f:BODY,st:0,id:'talk',min:18});X.restore()}
 function drawControls(){const C2=ctrlLayout();const L=LV;

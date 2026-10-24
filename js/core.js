@@ -24,7 +24,7 @@ const IM={};let NIMG=0,NLOAD=0;function img(n,src){const i=new Image();NIMG++;i.
 const okI=i=>!!i&&(i.tagName==='CANVAS'||(i.complete&&i.naturalWidth>0));
 ['title','map','l1','l2','l3','l4','l5','boss','fin','rotate','tile'].forEach(n=>img('bg_'+n,'assets/bg/'+n+'.jpg'));
 const SPRITES=['y_idle','y_cheer','y_point','y_run1','y_run2','y_jump','y_dash','y_swing','y_carry','y_throw','y_react','p_sit','p_jump','p_ball','p_talk','u_idle','u_talk','u_cheer','k_laugh','k_kind','k_squat','k_fly','k_hit'];
-const BLINKS=['y_idle','y_point','y_cheer','u_idle','u_talk','u_cheer'];
+const BLINKS=['y_idle','y_point','y_cheer','u_idle','u_talk','u_cheer','p_sit','p_talk','k_laugh','k_kind'];
 SPRITES.forEach(n=>{img(n,'assets/sprites/'+n+'.webp');if(BLINKS.includes(n))img(n+'_b','assets/sprites/'+n+'_b.webp')});
 ['crate','ring','tramp','gear','mouse','mouse_dz','ball','medal','board','btn_t','btn_o','hook','slot','gate','hat','flipper'].forEach(n=>img(n,'assets/ui/'+n+'.webp'));
 const FONT='FairyLogo, Georgia, serif',BODY='Pangolin, "Comic Sans MS", sans-serif',NUM='NunitoLogo, "Arial Black", sans-serif';

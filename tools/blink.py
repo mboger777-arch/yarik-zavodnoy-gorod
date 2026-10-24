@@ -2,7 +2,7 @@
 import numpy as np,cv2,sys,json
 from PIL import Image
 from scipy import ndimage
-EY={k:[tuple(e) for e in v] for k,v in json.load(open('tools/eyes.json')).items() if k[0] in 'yu'}
+EY={k:[tuple(e) for e in v] for k,v in json.load(open('tools/eyes.json')).items() if k[0] in 'yupk'}
 only=sys.argv[1:];INFO={}
 NZ={}
 FORCE={k:1.15 for k in EY}

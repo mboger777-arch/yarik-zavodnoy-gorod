@@ -52,6 +52,6 @@ function BOSS(){const L=newLevel({idx:5,bg:'boss',music:'boss',spawn:{x:3,y:1.2}
   for(const w of B.waves){const [x,y]=w2s(w.x,0);X.save();X.globalAlpha=Math.max(.3,1-w.t*.35);X.fillStyle='#e8d6b0';X.strokeStyle='#8a5a2a';X.lineWidth=3;X.beginPath();X.moveTo(x-K*.6,y);X.quadraticCurveTo(x+w.d*K*.15,y-K*1.1,x+w.d*K*.6,y);X.closePath();X.fill();X.stroke();X.restore()}
   const [bx,by]=w2s(B.x,B.y);const n=B.st==='down'?(B.t<1.2?'k_hit':'k_kind'):B.st==='hit'?(B.t<1?'k_hit':'k_laugh'):B.st==='squat'?'k_squat':B.st==='fly'?'k_fly':B.laughT>0?'k_laugh':'k_laugh';
   const h=2.7*K*(B.st==='squat'?.92:1)*(B.st==='rest'?1+.015*Math.sin(L.t*3):1);if(B.st!=='fly'){X.save();X.fillStyle='rgba(0,0,0,.25)';X.beginPath();X.ellipse(bx,w2s(0,0)[1],K*.8,K*.18,0,0,7);X.fill();X.restore()}
-  spr(n,bx+(B.st==='hit'&&B.t<.4?Math.sin(T*70)*6:0),by,h,{ax:.5,ay:1});
+  spr(n,bx+(B.st==='hit'&&B.t<.4?Math.sin(T*70)*6:0),by,h,{ax:.5,ay:1,blink:BLINKS.includes(n)?9:0});
   if(B.st==='down'&&B.t>1.2)for(let i=0;i<3;i++){const a=L.t*3+i*2.1;symDraw('st',bx+Math.cos(a)*K*.9,by-h*1.05+Math.sin(a)*K*.25,K*.14)}};
  return L}
