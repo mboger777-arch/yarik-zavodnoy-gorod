@@ -96,7 +96,7 @@ LEVELS[2]=function(){const L=lvBase(2,{bg:'l3',music:'level',spawn:{x:0,y:1.2},b
  mk.mouse(60,.5,52,64);
  L.exitX=78;
  L.targets=c=>{const t=T[L.cur];if(!t||t.solved)return[];if(!t.knocked)return[{x:t.tower,y:t.imp.b.getPosition().y,pri:1,direct:true}];return[{x:t.sl.x,y:t.sl.y,pri:1,direct:true}]};
- const knock=(t,dir)=>{if(t.knocked)return;t.knocked=1;const c=t.imp;c.pinned=false;c.revealed=1;
+ const knock=(t,dir)=>{if(t.knocked)return;t.knocked=1;const c=t.imp;c.pinned=false;c.revealed=1;c.pass=true;c.passT=1.2;
   setTimeout(()=>{try{c.b.setType('dynamic');c.b.setAwake(true);c.b.setLinearVelocity(V(dir*7,8));c.b.setAngularVelocity(dir*-9)}catch(_){}},0);
   hitstop(.12);FX.slow=.4;addShake(.5);const q=c.b.getPosition();wburst(q.x,q.y,30,'#ff8a5a',7,.7);ringFX(q.x,q.y,'#ff8a5a',2.5);SFX.smash();vib([30,30,30]);floatT('Бах!','#ffd27a',q.x,q.y+1);
   setTimeout(()=>{if(LV!==L)return;t.sl.act=true;t.vals[t.idx]='?';t.hud=t.vals;sayNow('l3_knock')},450);setTimeout(()=>{c.nograb=1},10);setTimeout(()=>{if(LV===L){c.dead=1;try{c.b.setActive(false)}catch(_){}const q=c.b.getPosition();wburst(q.x,q.y,16,'#fff',4,.5)}},1500)};
