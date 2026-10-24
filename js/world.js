@@ -110,7 +110,7 @@ function throwVel(p,t){const dx=t.x-p.x,dy=t.y-p.y;const g=-TU.g;if(t.direct){co
  return[r[0],r[1]]}
 function throwCrate(){const c=ST.carry;ST.carry=null;c.held=false;c.noPlayer=.35;c.b.setGravityScale(1);ST.throwT=.3;ST.noGrab=.45;
  const p=c.b.getPosition();let vx=ST.face*9,vy=6;const t=throwTarget(c);if(t){if(t.any&&Math.abs(t.x-p.x)>.6)ST.face=Math.sign(t.x-p.x);[vx,vy]=throwVel(p,t)}
- c.b.setLinearVelocity(V(vx,vy));c.b.setAngularVelocity(-ST.face*6);c.thrown=1.2;c.pass=!!(t&&t.direct);SFX.throw();addShake(.1);vib(8);LV.onThrow&&LV.onThrow(c,t)}
+ c.b.setLinearVelocity(V(vx,vy));c.b.setAngularVelocity(-ST.face*6);c.thrown=1.2;c.pass=!!(t&&t.direct);c.tgt=t||null;SFX.throw();addShake(.1);vib(8);LV.onThrow&&LV.onThrow(c,t)}
 function hookTo(r){const P=ST.P,p=P.getPosition();if(ST.hook)unhook(false);if(ST.carry)dropCarry();const L=Math.hypot(r.x-p.x,r.y-p.y);
  ST.hook=LV.world.createJoint(new pl.RopeJoint({bodyA:r.b,bodyB:P,localAnchorA:V(0,0),localAnchorB:V(0,.4),maxLength:L,collideConnected:false}));
  ST.ring=r;ST.hookT=0;ST.airDash=true;ST.dash=0;P.setGravityScale(1);r.pulse=0;r.used++;SFX.hook();vib(12);ringFX(r.x,r.y,'#9ff',1.2);
@@ -168,7 +168,7 @@ function finish(dt){const L=LV,P=ST.P,p=P.getPosition();ST.dashCD-=dt;ST.throwT-
  // шестерёнки, предметы
  for(const g of L.gears){g.t+=dt;if(g.got)continue;if(Math.hypot(g.x-p.x,g.y-p.y)<1.1){g.got=1;SV.gears[g.i]=1;save();SFX.gear();vib([15,30,15]);wburst(g.x,g.y,30,'#ffd54a',6,.7);ringFX(g.x,g.y,'#ffd54a',2);floatT('+1','#ffd54a',g.x,g.y+.8);sayNow('g_gear')}}
  for(const it of L.items){it.t+=dt;if(it.got||it.hidden)continue;if(Math.hypot(it.x-p.x,it.y-p.y)<1.1){it.got=1;SFX.gear();wburst(it.x,it.y,24,'#c9a0ff',5,.6);ringFX(it.x,it.y,'#c9a0ff',1.6);it.on&&it.on(it)}}
- for(const sl of L.slots){if(sl.solved||!sl.act||sl.rej>0)continue;for(const c of L.crates){if(c.held||c.dead||c.solved||!(c.thrown>0)||c.v==null)continue;const q=c.b.getPosition();if(Math.abs(q.x-sl.x)<sl.size+.15&&Math.abs(q.y-sl.y)<sl.size+.15){L.ev.push({e:'slot',sl,c});break}}}
+ for(const sl of L.slots){if(sl.solved||!sl.act||sl.rej>0)continue;for(const c of L.crates){if(c.held||c.dead||c.solved||!(c.thrown>0)||c.v==null)continue;if(c.tgt&&c.tgt.x!=null&&(Math.abs(c.tgt.x-sl.x)>.05||Math.abs(c.tgt.y-sl.y)>.05))continue;const q=c.b.getPosition();if(Math.abs(q.x-sl.x)<sl.size+.15&&Math.abs(q.y-sl.y)<sl.size+.15){L.ev.push({e:'slot',sl,c});break}}}
  // события
  while(L.ev.length){const e=L.ev.shift();handleEv(e)}
  for(const g of L.gates){const target=g.open?g.y0+g.h/2+g.h+.2:g.y0+g.h/2;const y=g.b.getPosition().y;g.b.setLinearVelocity(V(0,clamp((target-y)*4,-6,6)))}

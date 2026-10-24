@@ -95,7 +95,7 @@ LEVELS[2]=function(){const L=lvBase(2,{bg:'l3',music:'level',spawn:{x:0,y:1.2},b
  tower(68,[12,20,25,30,35],0,15,2,[15,10,16],[56,58.5,61]);
  mk.mouse(60,.5,52,64);
  L.exitX=78;
- L.targets=c=>{const t=T[L.cur];if(!t||t.solved)return[];if(!t.knocked)return[{x:t.tower,y:t.imp.b.getPosition().y,pri:1,direct:true}];return[{x:t.sl.x,y:t.sl.y,pri:1}]};
+ L.targets=c=>{const t=T[L.cur];if(!t||t.solved)return[];if(!t.knocked)return[{x:t.tower,y:t.imp.b.getPosition().y,pri:1,direct:true}];return[{x:t.sl.x,y:t.sl.y,pri:1,direct:true}]};
  const knock=(t,dir)=>{if(t.knocked)return;t.knocked=1;const c=t.imp;c.pinned=false;c.revealed=1;
   setTimeout(()=>{try{c.b.setType('dynamic');c.b.setAwake(true);c.b.setLinearVelocity(V(dir*7,8));c.b.setAngularVelocity(dir*-9)}catch(_){}},0);
   hitstop(.12);FX.slow=.4;addShake(.5);const q=c.b.getPosition();wburst(q.x,q.y,30,'#ff8a5a',7,.7);ringFX(q.x,q.y,'#ff8a5a',2.5);SFX.smash();vib([30,30,30]);floatT('Бах!','#ffd27a',q.x,q.y+1);
@@ -103,7 +103,7 @@ LEVELS[2]=function(){const L=lvBase(2,{bg:'l3',music:'level',spawn:{x:0,y:1.2},b
  L.onDashHit=c=>{const t=T[L.cur];if(!t||c.tower==null)return;if(c.imp&&c.tower===L.cur&&!t.knocked)knock(t,ST.face);else if(c.pinned){c.wob=1;c.shake=.6;SFX.clank(1);if(lim('wr',2500))sayNow('l3_wrong')}};
  L.onCC=(a,b)=>{const t=T[L.cur];if(!t)return;for(const [x,y] of [[a,b],[b,a]]){if(x.imp&&x.tower===L.cur&&!t.knocked&&y.thrown>0&&!y.held){const v=y.b.getLinearVelocity();knock(t,Math.sign(v.x)||1)}else if(x.pinned&&y.thrown>0&&!y.pass&&x.tower===L.cur&&!t.knocked){x.wob=1;x.shake=.6;if(lim('wr',2500))sayNow('l3_wrong')}}};
  trig(-100,()=>{run(async()=>{await wait(400);await say('l3_s')})});
- trig(8,()=>{startTask(0);if(!SV.tut.knock)setTimeout(()=>{if(LV===L)sayQ('o_knock');SV.tut.knock=1;save()},200)});trig(30,()=>startTask(1));trig(52,()=>{startTask(2);sayQ('o_stomp')});
+ trig(3.5,()=>{startTask(0);if(!SV.tut.knock)setTimeout(()=>{if(LV===L)sayQ('o_knock');SV.tut.knock=1;save()},200)});trig(24,()=>startTask(1));trig(51,()=>{startTask(2);sayQ('o_stomp')});
  L.drawBack=K=>{exitDraw(K);for(const t of T){const [x,y0]=w2s(t.tower,0),[,y1]=w2s(t.tower,6.2);X.strokeStyle='#8a6a3a';X.lineWidth=K*.12;X.beginPath();X.moveTo(x-K*.75,y0);X.lineTo(x-K*.75,y1);X.moveTo(x+K*.75,y0);X.lineTo(x+K*.75,y1);X.stroke();X.fillStyle='#c9a24a';X.fillRect(x-K*.9,y1-K*.15,K*1.8,K*.2)}};
  trig(21,()=>L.check={x:22,y:0});trig(49,()=>L.check={x:50,y:0});
  L.update=dt=>lvCommon(dt);
