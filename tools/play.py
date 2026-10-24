@@ -134,6 +134,11 @@ async def main():
         await W8(300);rs=[r for r in await ev("__T.rings()") if r['task']==k];good=[r for r in rs if r['good']][0]
         await pg.touchscreen.tap(good['css'][0],good['css'][1])
         ok=await until(f"__T.st().tasks[{k}]",3000)
+        if not ok:
+          log(' ring retry',k,await st());await notalk(6000);await walkto(E-.2,4000);await W8(400)
+          rs=[r for r in await ev("__T.rings()") if r['task']==k];good=[r for r in rs if r['good']][0]
+          await pg.touchscreen.tap(good['css'][0],good['css'][1]);ok=await until(f"__T.st().tasks[{k}]",3000)
+          if not ok: FAIL.append(f'L1 t{k} ring tap')
         await W8(300);await shot(f'12_L1_t{k}_hook') if k==1 else None
         ok2=await until(f"__T.st().x>{E+12.5}&&__T.st().g",6000)
         log('L1',k,'solved',ok,'landed',ok2,round((await st())['x'],1))
