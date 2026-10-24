@@ -62,13 +62,13 @@ LEVELS[1]=function(){const L=lvBase(1,{bg:'l2',music:'level2',spawn:{x:0,y:1.2},
   sl.onBad=c=>{sayNow('l2_bad')};
   s.land=land;return s};
  const sA=stair(12,0,[1,2,3,4],5,0,[6,5,3],{x:22.5,y:6.5},[4.5,7,9.3]);
- mk.ground(18,0,44,6.5);
+ mk.ground(17.85,0,44,6.5);
  const sB=stair(35.5,6.5,[2,4,6],8,1,[7,10,8],{x:45.5,y:13.5},[22,24.5,29]);
  mk.mouse(31,7,26.5,33.5);
- mk.ground(41,6.5,70,13.5);
+ mk.ground(40.05,6.5,70,13.5);
  const sC=stair(59.5,13.5,[1,3,5],7,2,[6,9,7],{x:68.5,y:19.5},[45.5,49,53]);
  mk.mouse(51,14,47,56.5);
- mk.ground(65,13.5,84,19.5);mk.ground(84,-3,85,40);L.exitX=78;L.exitY=19.5;
+ mk.ground(64.05,13.5,84,19.5);mk.ground(84,-3,85,40);L.exitX=78;L.exitY=19.5;
  L.update=dt=>{lvCommon(dt);for(const s of L.steps){if(s.rising){const y=s.b.getPosition().y,ty=s.base+s.h/2;if(y<ty-.01)s.b.setLinearVelocity(V(0,Math.min(3,(ty-y)*6+.5)));else{s.b.setLinearVelocity(V(0,0));s.b.setPosition(V(s.x,ty));s.rising=0;
    const pd=mk.pad(s.x,s.base+s.h,1.15,{to:s.land});pd.apex=1.2;wburst(s.x,s.base+s.h,20,'#ffd54a',5,.6);sayNow('l2_up')}}}};
  trig(-100,()=>{run(async()=>{await wait(400);await say('l2_s');if(!SV.tut.carry){L.hint='carry';await say('o_carry')}startTask(0)})});
