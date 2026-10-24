@@ -20,7 +20,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){onOrient(
 if(window.visualViewport){visualViewport.addEventListener('resize',onOrient);visualViewport.addEventListener('scroll',onOrient)}
 setInterval(()=>{const[w,h]=vpWH();if(w!==_lastW||h!==_lastH)relayout()},500);rs();
 // ---- картинки ----
-const IM={};let NIMG=0,NLOAD=0;function img(n,src){const i=new Image();NIMG++;i.onload=i.onerror=()=>NLOAD++;i.src=src+'?v=1';IM[n]=i;return i}
+const IM={};let NIMG=0,NLOAD=0;function img(n,src){const i=new Image();NIMG++;i.onload=i.onerror=()=>NLOAD++;i.src=src+'?v=20261024a1';IM[n]=i;return i}
 const okI=i=>!!i&&(i.tagName==='CANVAS'||(i.complete&&i.naturalWidth>0));
 ['title','map','l1','l2','l3','l4','l5','boss','fin','rotate','tile'].forEach(n=>img('bg_'+n,'assets/bg/'+n+'.jpg'));
 const SPRITES=['y_idle','y_cheer','y_point','y_run1','y_run2','y_jump','y_dash','y_swing','y_carry','y_throw','y_react','p_sit','p_jump','p_ball','p_talk','u_idle','u_talk','u_cheer','k_laugh','k_kind','k_squat','k_fly','k_hit'];
