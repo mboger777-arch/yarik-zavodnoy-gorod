@@ -56,7 +56,7 @@ LEVELS[1]=function(){const L=lvBase(1,{bg:'l2',music:'level2',spawn:{x:0,y:1.2},
   const s={x:sx,w:1.3,h,v:'?',b,base,kin:1,show:true};L.steps.push(s);L.solids.push({x1:sx-.65,y1:base,x2:sx+.65,y2:base+h,b,look:'step',st:s,clipY:base});
   const sl=mk.slot(sx,base+.85,ans,{size:.62});
   const sign=mk.sign(x0+1.6,base+4.7,vals.concat(['?']),{post:0});
-  T.push({vals:sign.vals,sign,ans,line:'l2_t'+(ti+1),ok:'l2_ok'+(ti+1),bad:'l2_bad',auto:false});
+  T.push({sl,vals:sign.vals,sign,ans,line:'l2_t'+(ti+1),ok:'l2_ok'+(ti+1),bad:'l2_bad',auto:false});
   boxes.forEach((v,j)=>mk.crate(v,bx[j],base+.6));
   sl.onOk=c=>{c.hide=1;c.dead=1;try{c.b.setActive(false)}catch(_){}s.v=ans;s.glow=1;s.rising=1;solveTask(ti);SFX.rise()};
   sl.onBad=c=>{sayNow('l2_bad')};
@@ -74,7 +74,7 @@ LEVELS[1]=function(){const L=lvBase(1,{bg:'l2',music:'level2',spawn:{x:0,y:1.2},
  trig(-100,()=>{run(async()=>{await wait(400);await say('l2_s');if(!SV.tut.carry){L.hint='carry';await say('o_carry')}startTask(0)})});
  trig(20,()=>startTask(1),{cond:()=>ST.P.getPosition().y>6});trig(44,()=>startTask(2),{cond:()=>ST.P.getPosition().y>13});
  L.onGrab=()=>{if(L.hint==='carry'){}};L.onThrow=()=>{if(L.hint==='carry')hintDone('carry')};
- L.targets=c=>L.slots.filter(s=>!s.solved).map(s=>({x:s.x,y:s.y,any:true}));
+ L.targets=c=>{const t=L.task;const sl=t&&!t.solved&&t.sl?[t.sl]:L.slots.filter(s=>!s.solved);return sl.map(s=>({x:s.x,y:s.y,any:true}))};
  L.drawBack=K=>exitDraw(K);
  trig(19,()=>L.check={x:21,y:6.5},{cond:()=>ST.P.getPosition().y>6});trig(42,()=>L.check={x:44,y:13.5},{cond:()=>ST.P.getPosition().y>13});
  return L};

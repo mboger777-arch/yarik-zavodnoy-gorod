@@ -269,7 +269,7 @@ async def main():
       await shot('91_pin_play')
       # гарантированный проход: шарик кладём над бамперами по порядку
       for bi in range(5):
-        await ev(f"(()=>{{const P={SCP};const b=P.bump.find(q=>q.v==={(bi+1)*2});P.ball.setPosition(V(b.x,b.y+1.3));P.ball.setLinearVelocity(V(0,-6))}})();0");await W8(900)
+        await ev(f"(()=>{{const P={SCP};const b=P.bump.find(q=>q.v==={(bi+1)*2});P.ball.setPosition(V(b.x-1.2,b.y));P.ball.setLinearVelocity(V(8,0))}})();0");await W8(900)
       log('pin lit',await ev(f"{SCP}.lit"),'done',await ev(f"{SCP}.done"))
       if not await ev(f"{SCP}.done"): FAIL.append('pin not won')
       await W8(2500);await shot('92_pin_win');await audit('pin_win')
