@@ -81,8 +81,10 @@ async def main():
         if tx is not None and abs(s['x']-tx)>8:
           await walkto(tx-7.5 if tx>s['x'] else tx+7.5,6000,jump=True);await W8(200)
           await ev(f"__T.face({1 if tx>(await st())['x'] else -1})")
-        await key('KeyX');await W8(1600)
-        s=await st();n1=sum(1 for t in s['tasks'] if t);b1=await ev("BADN")
+        await key('KeyX')
+        for _ in range(9):
+          await W8(400);s=await st();n1=sum(1 for t in s['tasks'] if t);b1=await ev("BADN")
+          if n1>n0 or b1>b0: break
         if expect_ok and n1>n0: log(' ok throw',v);return True
         if not expect_ok and b1>b0: log(' wrong throw spat',v);return True
         log(' throw retry',v,'bad',b0,b1,'solved',n0,n1,'carry',s['carry'])
