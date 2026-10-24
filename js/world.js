@@ -1,7 +1,7 @@
 'use strict';
 // ===== Мир: физика planck.js, герой, предметы, камера, отрисовка, управление =====
 const pl=planck,V=pl.Vec2;
-const TU={g:-30,fallMul:1.7,maxFall:-22,run:7.5,accG:75,accA:42,decG:90,jumpV:12.8,jumpCut:.45,coyote:.12,buffer:.14,dashV:16,dashT:.2,dashCD:.4,hookR:7.5,tapR:10,reel:6,minRope:3.2,pump:16,relBoost:1.1,relUp:3,carryK:14,throwMaxD:13,springV:19,knockV:[8,7],stompV:13};
+const TU={g:-30,fallMul:1.7,maxFall:-22,run:7.5,accG:75,accA:42,decG:90,jumpV:12.8,jumpCut:.45,coyote:.12,buffer:.14,dashV:16,dashT:.2,dashCD:.4,hookR:7.5,tapR:10,reel:6,minRope:3.2,pump:16,relBoost:1.1,relUp:3,carryK:14,throwMaxD:15,springV:19,knockV:[8,7],stompV:13};
 const VH=7.6;// видимая высота мира в метрах
 let LV=null;// текущий уровень
 const FX={shake:0,hit:0,slow:1,flash:0,flashC:'#fff'};

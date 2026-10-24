@@ -152,7 +152,7 @@ LEVELS[4]=function(){const L=lvBase(4,{bg:'l5',music:'level',spawn:{x:0,y:1.2},b
  // кран-крюк для шестерёнки
  mk.ring(38,7.6);mk.ring(43,7.9,{land:{x:47.2,y:8.2}});mk.ground(45.5,7.8,49,8.2,{oneway:true});mk.gear(47.2,9,4);
  L.exitX=54;L.camFn=(tx,ty)=>{const p=ST.P.getPosition();if(p.x>15.5&&p.x<28&&p.y<3)return[tx,3.6];return[tx,ty]};
- L.targets=c=>L.slots.filter(s=>!s.solved).map(s=>({x:s.x,y:s.y,any:true,pri:L.task&&L.task.sl===s?2:0}));
+ L.targets=c=>{const sl=L.task&&!L.task.solved?[L.task.sl]:L.slots.filter(s=>!s.solved);return sl.map(s=>({x:s.x,y:s.y,any:true,pri:2,direct:true}))};
  L.update=dt=>{lvCommon(dt);L.spawnT-=dt;const live=L.balls.filter(b=>!b.dead&&!b.solved);if(live.length<4&&L.spawnT<=0&&!T.every(t=>t.solved)){spawn();L.spawnT=1.2}
   for(const b of live){const q=b.b.getPosition();if(!b.held&&q.x<14.4&&q.y<1.2&&q.x>-1){const v=b.b.getLinearVelocity();b.b.setLinearVelocity(V(Math.max(v.x,2.2),v.y))}}
   if(!L.task||L.task.solved){const n=T.findIndex(t=>!t.solved);if(n>=0&&L.t>6)startTask(n)}};
