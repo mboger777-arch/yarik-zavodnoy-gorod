@@ -130,7 +130,7 @@ SC.fin={enter(){music('win');G.kind=true;const st=this.st={med:-1};
   if(st.med>0){const k=ease(clamp((T-st.med)/.8,0,1));const mh=Math.min(260,v.h*.36)*k;spr('medal',cx+(talk?0:0),safeT()+(talk?140:110)+mh/2+Math.sin(T*2)*5,mh,{rot:Math.sin(T*1.5)*.05});
    if(!talk)textIn('Мастер закономерностей',640,safeT()+52,Math.min(820,v.w*.62),84,66,'#ffe9a8',{f:FONT,st:'#3a1d00',lw:10,id:'mtitle'})}
   drawTalk();drawParticlesIf();if(Math.random()<.03&&st.med>0)burst(rnd(v.x0,v.x0+v.w),v.y0+30,20,'conf')},
- ui(){if(this.st.med>0&&!talk)boardBtn('tomap',640,safeB()-62,300,'На карту',()=>{G.kind=false;go('map')},{pulse:1})}};
+ ui(){if(this.st.med>0&&!talk)boardBtn('tomap',safeR()-130,safeB()-62,250,'На карту',()=>{G.kind=false;go('map')},{pulse:1})}};
 // ---- поворот экрана ----
 function drawRotate(){X.setTransform(DPR,0,0,DPR,0,0);const b=IM.bg_rotate;if(okI(b)){const s=Math.max(W/b.naturalWidth,H/b.naturalHeight);X.drawImage(b,(W-b.naturalWidth*s)/2,(H-b.naturalHeight*s)/2,b.naturalWidth*s,b.naturalHeight*s)}else{X.fillStyle='#2b1d3a';X.fillRect(0,0,W,H)}
  const w=Math.min(W*.86,520),h=Math.min(110,H*.13),x=W/2,y=H*.86;X.fillStyle='rgba(43,25,58,.9)';rr(x-w/2,y-h/2,w,h,22);X.fill();X.strokeStyle='#e0b25a';X.lineWidth=4;X.stroke();

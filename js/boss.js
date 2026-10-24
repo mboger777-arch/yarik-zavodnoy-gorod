@@ -23,7 +23,7 @@ function BOSS(){const L=newLevel({idx:5,bg:'boss',music:'boss',spawn:{x:3,y:1.2}
  L.update=dt=>{const P=ST.P,p=P.getPosition(),v=P.getLinearVelocity();B.t+=dt;B.laughT-=dt;B.key+=dt*B.keyV;B.keyV=Math.max(1+B.ph,B.keyV-dt*6);
   if(ST.carry&&!SV.tut.carry){L.hint='carry'}if(L.hint==='carry'&&ST.throwT>0)hintDone('carry');
   const rest=[1.7,1.35,1.05][Math.min(2,B.ph)];
-  if(B.st==='rest'&&B.t>rest&&!L.won){B.st='squat';B.t=0;let tx=clamp(p.x+v.x*.25,2,18);if(Math.abs(tx-10)<1.5)tx=10+(tx<10?-1.5:1.5);B.fx=B.x;B.tx=tx;B.face=Math.sign(tx-B.x)||B.face;SFX.wind()}
+  if(B.st==='rest'&&B.t>rest&&!L.won){B.st='squat';B.t=0;let tx=clamp(p.x+v.x*.25,3.6,16.4);if(Math.abs(tx-10)<1.5)tx=10+(tx<10?-1.5:1.5);B.fx=B.x;B.tx=tx;B.face=Math.sign(tx-B.x)||B.face;SFX.wind()}
   else if(B.st==='squat'&&B.t>.75){B.st='fly';B.t=0;SFX.whoosh();SFX.laugh()}
   else if(B.st==='fly'){const k=Math.min(1,B.t/1);B.x=lerp(B.fx,B.tx,k);B.y=Math.sin(k*Math.PI)*5.5;if(k>=1){B.y=0;B.st='rest';B.t=0;land()}}
   else if(B.st==='hit'||B.st==='down'){B.y=Math.max(0,B.y-dt*4)}
